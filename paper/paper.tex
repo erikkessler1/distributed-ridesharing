@@ -1,0 +1,57 @@
+\documentclass[letterpaper,11pt,twocolumn]{article}
+\usepackage{usenix,graphicx,times}
+
+%\usepackage{graphics, graphicx, fancyhdr, epsfig, amstext}
+%\usepackage{amsmath, amssymb, xspace, setspace, times, color}
+
+\begin{document}
+
+\title{CSCI 339 Final Project: Peer-to-Peer Ride-Sharing} 
+\date{}
+
+\author{
+  {\rm Erik Kessler, Kevin Persons}\\
+       Williams College\\
+}
+
+\maketitle
+
+\thispagestyle{empty}
+%\pagestyle{empty}
+                                   
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+Discuss the idea behind the project drawing from what we wrote in our proposal.
+
+\section{Architectural Overview}
+We'll see how the system turns out.
+
+\section{Evaluation}
+Here we will evaluate our system using our simulator. We will see how the system performs in terms of making data available to users, so we will be evaluating what percentage of all available data a user is able to access on average. In essence measuring availability. We will see how this changes as we tune different parameters of our algorithms and system. Furthermore, to evaluate scalability, we will look at how these numbers change as the system scales and nodes leave the network. \\
+
+We hypothesize that we will be able to increase availability by increasing the number of network calls, so we might also evaluate how the number of network calls impacts things.
+
+\section{Related Work}
+We have found other people working on similar things. For example:
+La'Zooz: http://www.shareable.net/blog/lazooz-the-decentralized-crypto-alternative-to-uber
+
+So in this section we will explore these other projects.
+
+\section{Future Work}
+Discuss what we would need to do to address the assumptions we started with, and how we might implement the additional features that an actual ride sharing application would want such as geolocation. \\
+
+Discuss what we think we would need to do to actually implement this for actual smartphones. So thinking about how we would communicate between devices in a platform independent and battery sensitive way. 
+
+\section{Conclusions}
+Talk about what we learned building a peer-to-peer system: the challenges and obstacles and how we tried to overcome them. Compare building a P2P system against building a client-server system.
+
+Discuss the feasibility of a peer-to-peer ride-sharing application. There are security concerns like how do you verify that the people offering rides are safe to accept rides from. We think that it might work on something like a college campus where we could use college emails as a form of security, identification, and trust.
+
+
+%\bibliographystyle{plain}
+%\bibliography{bibfile}
+
+\end{document}
