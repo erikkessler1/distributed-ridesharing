@@ -112,11 +112,14 @@ class World(size: Int, peers: List[Peer]) {
   /**
    * Moves the world forward one step.
    */ 
-  def step(steps: Int) = { }
+  def step(steps: Int) = {
+    peers.foreach { _.step() }
+    printWorld()
+  }
 
 }
 
 
 class Peer {
-
+  def step() = { }
 }
