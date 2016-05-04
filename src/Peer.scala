@@ -13,7 +13,7 @@ object Peer {
     args(0) match {
       case "Commuter" => com = new Commuter(20)
       case "Passenger" => com = new Passenger(20)
-      case "Random" => com = new Random(20)
+      case "RandomMover" => com = new RandomMover(20)
       case "Traveler" => com = new Traveler(20)
     }
     var i = 0
@@ -63,7 +63,7 @@ object Peer {
  }
 
  // type of peer that randomly moves around at various speeds or stands still
- class Random(initialPos: Int) extends Peer(initialPos) {
+ class RandomMover(initialPos: Int) extends Peer(initialPos) {
    override def step(): Int = {
      val r = scala.util.Random
      val x = r.nextInt(3) //0-2

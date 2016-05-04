@@ -10,16 +10,33 @@ import scala.util.Random
  * them take actions related to ride-sharing.Then having the ability
  * to view both the global state of the network and the state of each
  * machine to determine how information is flowing through the network.
- * 
+ *
  * Erik Kessler and Kevin Persons
  */
 object Simulator {
 
   def main(args: Array[String]): Unit = {
 
-    // Initialize list of peers
-    val peers = Nil
+    // Initialize a list of some number of peers, as specified by user input
+    val peers = initializePeers(Util.toInt(args(0)).getOrElse(100))
+    println(peers)
 
     val world = new World(100, peers)
     world.start()
+  }
+
+  def initializePeers(n: Int) : List[Peer] = {
+    var list : List[Peer] = Nil
+    for (i <- 1 to n) {
+      val random = scala.util.Random.nextInt(4) //0-3
+      val initialPosition = scala.util.Random.nextInt(1001) //0-1000
+      list = random match {
+        case 0 => new Commuter(initialPosition) :: list
+        case 1 => new Passenger(initialPosition) :: list
+        case 2 => new RandomMover(initialPosition) :: list
+        case 3 => new Traveler(initialPosition) :: list
+      }
+    }
+    return list
+  }
 }
