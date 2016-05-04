@@ -118,8 +118,3 @@ class World(size: Int, peers: List[Peer]) {
   }
 
 }
-
-
-class Peer {
-  def step() = { }
-}
