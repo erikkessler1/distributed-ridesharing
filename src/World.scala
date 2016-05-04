@@ -69,8 +69,7 @@ class World(size: Int, peers: List[Peer]) {
 
   // Instructions for the command prompt
   private def printInstructions() = {
-    print("s    : Step simulation\n" + 
-	  "f [n]: Set focus on peer n")
+    print(Command.commands.mkString("\n"))
   }
 
 
@@ -82,7 +81,10 @@ class World(size: Int, peers: List[Peer]) {
       val command = ln.split(" ")(0)
       val args = ln.split(" ").toList.tail
 
-      print("\n   " + ANSI.style(ANSI.BOLD::Nil, Command.execute(command, args)))
+      // Execute the command and print the result
+      print("\n   " + ANSI.style(ANSI.BOLD::Nil, Command.execute(this, command, args).padTo(35, ' ')))
+
+      // Reset the prompt
       print(ANSI.up(2) + ANSI.delete + ANSI.restore + "-> ")
     }
   }
@@ -93,6 +95,9 @@ class World(size: Int, peers: List[Peer]) {
    * Prints the updated positions of the world.
    */ 
   def printWorld() = { }
+
+
+  def step(steps: Int) = { }
 
 }
 
