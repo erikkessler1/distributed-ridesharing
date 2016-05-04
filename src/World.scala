@@ -8,13 +8,9 @@
  */
 class World(size: Int, peers: List[Peer]) {
 
+  // Height and width of the terminal window
   private val WIDTH = 132
   private val HEIGHT = 43
-
-  // Peer to center the world around
-  private var focusedPeer: Peer = null;
-
-  def setFocus(n: Int) = focusedPeer = peers(n)
 
   /**
    * Setup the world and begin accepting commands to control the world.
@@ -84,7 +80,8 @@ class World(size: Int, peers: List[Peer]) {
       val args = ln.split(" ").toList.tail
 
       // Execute the command and print the result
-      print("\n   " + ANSI.style(ANSI.BOLD::Nil, Command.execute(this, command, args).padTo(35, ' ')))
+      val paddedResult = Command.execute(this, command, args).padTo(35, ' ')
+      print("\n   " + ANSI.style(ANSI.BOLD::Nil, paddedResult))
 
       // Reset the prompt
       print(ANSI.up(2) + ANSI.delete + ANSI.restore + "-> ")
@@ -99,6 +96,22 @@ class World(size: Int, peers: List[Peer]) {
   def printWorld() = { }
 
 
+  /* METHODS FOR MANIPULATING THE WORLD */
+
+  // Peer to center the world around
+  private var focusedPeer: Peer = null;
+
+  /**
+   * Changes which peer the world is centered on.
+   */ 
+  def setFocus(n: Int) = {
+    focusedPeer = peers(n)
+    printWorld()
+  }
+
+  /**
+   * Moves the world forward one step.
+   */ 
   def step(steps: Int) = { }
 
 }
