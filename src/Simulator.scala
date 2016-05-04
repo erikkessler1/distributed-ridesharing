@@ -15,7 +15,13 @@ import scala.util.Random
  */
 object Simulator {
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String]): Unit = {
+
+    val world = new World(100, Nil)
+    world.printInitialWorld()
+    for (ln <- io.Source.stdin.getLines)
+    return
+
     print("\u001b[42mBlue text with yellow background\u001b[0m\u001b[2J\u001b[0;0HHello World!\u001b[5;0HEnter Stuff: blah blah\u001b[5;14H\u001b[K")
 
     for (ln <- io.Source.stdin.getLines) {
