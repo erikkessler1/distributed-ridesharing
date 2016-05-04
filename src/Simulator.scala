@@ -17,8 +17,10 @@ object Simulator {
 
   def main(args: Array[String]): Unit = {
 
+    val numberOfPeers = if (args.length > 0) Util.toInt(args(0)).getOrElse(100) else 100
+
     // Initialize a list of some number of peers, as specified by user input
-    val peers = initializePeers(Util.toInt(args(0)).getOrElse(100))
+    val peers = initializePeers(numberOfPeers)
     println(peers)
 
     val world = new World(100, peers)
