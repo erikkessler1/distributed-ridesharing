@@ -17,6 +17,9 @@ object Simulator {
 
   def main(args: Array[String]): Unit = {
 
-    val world = new World(100, Nil)
+    // Initialize list of peers
+    val peers = Nil
+
+    val world = new World(100, peers)
     world.start()
 }
