@@ -14,6 +14,8 @@ class World(size: Int, peers: List[Peer]) {
   // Peer to center the world around
   private var focusedPeer: Peer = null;
 
+  def setFocus(n: Int) = focusedPeer = peers(n)
+
   /**
    * Setup the world and begin accepting commands to control the world.
    */ 

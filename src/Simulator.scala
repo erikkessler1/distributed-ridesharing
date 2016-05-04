@@ -22,4 +22,6 @@ object Simulator {
 
     val world = new World(100, peers)
     world.start()
+
+  }
 }
