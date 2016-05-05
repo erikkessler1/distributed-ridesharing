@@ -93,7 +93,23 @@ class World(size: Int, peers: List[Peer]) {
   /**
    * Prints the updated positions of the world.
    */ 
-  def printWorld() = { }
+  def printWorld() = { 
+
+    // Move to correct place
+    print(ANSI.move(4, 0))
+
+    // Calculate the world line
+    val line = makeWorldLine()
+    print(line)
+
+    // Print the log
+
+    print(ANSI.restore + ANSI.right(2))
+  }
+
+  def makeWorldLine() = {
+    ""
+  }
 
 
   /* METHODS FOR MANIPULATING THE WORLD */
