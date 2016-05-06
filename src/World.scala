@@ -6,7 +6,7 @@
  * 
  * Erik Kessler and Kevin Persons
  */
-class World(size: Int, peers: List[Peer]) {
+class World(peers: List[Peer]) {
 
   // Height and width of the terminal window
   private val WIDTH = 132
@@ -37,7 +37,7 @@ class World(size: Int, peers: List[Peer]) {
   // Line of slots for the world.
   private def createWorldLine() = {
     print(ANSI.move(5,0))
-    print("_" * WIDTH)
+    print("=" * WIDTH)
   }
 
   // Line between command prompt and log area
@@ -108,14 +108,41 @@ class World(size: Int, peers: List[Peer]) {
   }
 
   def makeWorldLine() = {
-    ""
+    val right = focusedPeer.pos + (WIDTH / 2)
+    val left = focusedPeer.pos - (WIDTH / 2)
+    val range = (left to right).map(n => (1000 + n) % 1000)
+
+    val peersInRange = peers.filter(p => range.contains(p.pos))
+
+
+
+    var line = ""
+    for (i <- range) {
+      //println(s"i: $i next: $next")
+
+      line += (
+      if (i == focusedPeer.pos) {
+	ANSI.style(List(ANSI.PURPLE), "█") 
+      } else if (peersInRange.exists(_.pos == i)) {
+        ANSI.style(List(ANSI.GRAY), "█")
+      } else 
+	" ")
+    }
+    line
+  }
+
+  private def getNextPeer(peers: List[Peer]) = {
+    peers.headOption match {
+      case Some(p) => p.pos
+      case None    => -1
+    }
   }
 
 
   /* METHODS FOR MANIPULATING THE WORLD */
 
   // Peer to center the world around
-  private var focusedPeer: Peer = null;
+  private var focusedPeer: Peer = peers(0);
 
   /**
    * Changes which peer the world is centered on.
@@ -129,8 +156,11 @@ class World(size: Int, peers: List[Peer]) {
    * Moves the world forward one step.
    */ 
   def step(steps: Int) = {
-    peers.foreach { _.step() }
-    printWorld()
+    for (i <- 1 to steps) {
+      peers.foreach { _.step() }
+      printWorld()
+      if (steps > 1) Thread.sleep(200)
+    }
   }
 
 }

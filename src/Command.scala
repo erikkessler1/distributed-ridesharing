@@ -40,10 +40,14 @@ abstract class WorldCommand(val c: String, val args: String, val description: St
 /**
  * Command for stepping the world forward one time unit.
  */ 
-class StepCommand() extends WorldCommand("s", "", "Step simulation.") {
+class StepCommand() extends WorldCommand("s", "[n]", "Step simulation.") {
 
   override def execute(world: World, args: List[String]) = {
-    world.step(1)
+    val n = args match {
+      case a::as => Util.toInt(a).getOrElse(1)
+      case Nil   => 1
+    }
+    world.step(n)
     "Step"
   }
 }
