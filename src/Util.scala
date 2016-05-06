@@ -9,5 +9,7 @@ object Util {
     }
   }
 
+  val worldSize = 1000
+
 
 }
