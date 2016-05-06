@@ -156,8 +156,11 @@ class World(peers: List[Peer]) {
    * Moves the world forward one step.
    */ 
   def step(steps: Int) = {
-    peers.foreach { _.step() }
-    printWorld()
+    for (i <- 1 to steps) {
+      peers.foreach { _.step() }
+      printWorld()
+      if (steps > 1) Thread.sleep(200)
+    }
   }
 
 }
