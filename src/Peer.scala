@@ -57,7 +57,8 @@ object Peer {
        direction = (direction + 1) % 2 // reverse direction
        progress = 0 // reset progress
      }
-     return wrap(pos)
+     pos = wrap(pos)
+     return pos
    }
  }
 
@@ -71,7 +72,8 @@ object Peer {
        case 1 => pos -= 1 //10% move left
        case _ => //80% chance stand still
      }
-     return wrap(pos)
+     pos = wrap(pos)
+     return pos
    }
  }
 
@@ -87,7 +89,8 @@ object Peer {
        case 1 => pos = pos - speed
        case 2 => // stand still
      }
-     return wrap(pos)
+     pos = wrap(pos)
+     return pos
    }
  }
 
@@ -103,7 +106,8 @@ object Peer {
        return wrap(pos)
      }
      if (direction == 0) pos += speed else pos -= speed
-     return wrap(pos)
+     pos = wrap(pos)
+     return pos
    }
  }
 
