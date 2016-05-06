@@ -19,7 +19,7 @@ object Simulator {
     val peers = initializePeers(numberOfPeers)
     println(peers)
 
-    val world = new World(100, peers)
+    val world = new World(peers)
     world.start()
   }
 
