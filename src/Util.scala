@@ -9,7 +9,7 @@ object Util {
     }
   }
 
-  val worldSize = 1000
+  val worldSize = 1200
 
 
 }

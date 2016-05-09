@@ -100,8 +100,7 @@ class World(peers: List[Peer]) {
     print(ANSI.move(4, 0))
 
     // Calculate the world line
-    val line = makeWorldLine()
-    print(line)
+    print(makeWorldLine + makeGroundLine )
 
     // Print the log
 
@@ -109,17 +108,17 @@ class World(peers: List[Peer]) {
   }
 
   def makeWorldLine() = {
-    val right = focusedPeer.pos + (WIDTH / 2)
+
+    // Get all the peers in range of the current focus
+    val right = focusedPeer.pos + (WIDTH / 2) - 1
     val left = focusedPeer.pos - (WIDTH / 2)
-    val range = (left to right).map(n => (1000 + n) % 1000)
+    val range = (left to right).map(n => (Util.worldSize + n) % Util.worldSize)
 
     val peersInRange = peers.filter(p => range.contains(p.pos))
 
-
-
+    // Add the correct character and color for each place on the line
     var line = ""
     for (i <- range) {
-      //println(s"i: $i next: $next")
 
       line += (
       if (i == focusedPeer.pos) {
@@ -130,6 +129,18 @@ class World(peers: List[Peer]) {
 	" ")
     }
     line
+  }
+
+  def makeGroundLine() = {
+    val modPos = focusedPeer.pos % 12
+
+    val section = if (modPos > 6) {
+      ("=" * (12 - modPos)) + ("+" * 6) + ("=" * (6 - (12 - modPos)))
+    } else {
+      ("+" * (6 - modPos)) + ("=" * 6) + ("+" * modPos)
+    }
+
+    section * 11
   }
 
   private def getNextPeer(peers: List[Peer]) = {
