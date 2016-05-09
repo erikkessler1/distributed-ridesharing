@@ -8,7 +8,7 @@ object Command {
   /**
    * All commands available
    */ 
-  val commands = List(new StepCommand(), new FocusCommand())
+  val commands: List[WorldCommand] = List(new StepCommand(), new FocusCommand())
 
   /**
    * Execute command, op, with args on the world

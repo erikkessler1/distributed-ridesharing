@@ -61,7 +61,6 @@ class World(peers: List[Peer]) {
     printInstructions()
     print(ANSI.down(1))
     print("\n")
-    print(ANSI.store)
     print("-> ")
   }
 
@@ -104,7 +103,7 @@ class World(peers: List[Peer]) {
 
     // Print the log
 
-    print(ANSI.restore + ANSI.right(2))
+    print(ANSI.move(15 + Command.commands.size, 0) + ANSI.right(2))
   }
 
   /**
