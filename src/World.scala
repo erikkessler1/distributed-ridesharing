@@ -76,15 +76,16 @@ class World(peers: List[Peer]) {
   private def handleCommands() = {
     for (ln <- io.Source.stdin.getLines) {
 
+      print(ANSI.up(1) + ANSI.right(ln.length + 3) + ANSI.delete + ANSI.left(ln.length + 3) + "-> ") 
+      
       val command = ln.split(" ")(0)
       val args = ln.split(" ").toList.tail
 
       // Execute the command and print the result
       val paddedResult = Command.execute(this, command, args).padTo(35, ' ')
       print("\n   " + ANSI.style(ANSI.BOLD::Nil, paddedResult))
+      print(ANSI.up(1) + ANSI.left(paddedResult.length))
 
-      // Reset the prompt
-      print(ANSI.up(2) + ANSI.delete + ANSI.restore + "-> ")
     }
   }
 
@@ -95,7 +96,7 @@ class World(peers: List[Peer]) {
    */ 
   def printWorld() = { 
 
-    // Move to correct place
+    // Move to correct place for the line
     print(ANSI.move(4, 0))
 
     // Calculate the world line
@@ -155,11 +156,11 @@ class World(peers: List[Peer]) {
   /**
    * Moves the world forward one step.
    */ 
-  def step(steps: Int) = {
+  def step(steps: Int, delay: Int) = {
     for (i <- 1 to steps) {
       peers.foreach { _.step() }
       printWorld()
-      if (steps > 1) Thread.sleep(200)
+      if (steps > 1) Thread.sleep(delay)
     }
   }
 
