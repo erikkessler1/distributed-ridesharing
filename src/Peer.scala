@@ -34,10 +34,18 @@ object Peer {
    var peerList : List[Peer] = Nil
 
    // moves the peer through the world at each time step
-   def step(): Int
+   def step(): Int = {
+     pos = wrap(pos)
+     updatePeerList()
+     pos
+   }
 
-   // helper function to ensure that the peer wraps around when it reaches the end of the "world" line
-   def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
+   // helper function to ensure that the peer wraps around when it reaches the end of the world
+   private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
+
+   private def updatePeerList() = {
+
+   }
  }
 
  // Commutes a certain distance back and forth repeatedly
@@ -49,6 +57,7 @@ object Peer {
    var direction = commuteLength % 2
 
    override def step(): Int = {
+
      if (progress < commuteLength) {
        if (direction == 0) pos += speed else pos -= speed //move
        progress = progress + speed //update progress
@@ -57,8 +66,8 @@ object Peer {
        direction = (direction + 1) % 2 // reverse direction
        progress = 0 // reset progress
      }
-     pos = wrap(pos)
-     return pos
+
+     return super.step
    }
  }
 
@@ -66,14 +75,15 @@ object Peer {
  class Passenger(initialPos: Int) extends Peer(initialPos) {
 
    override def step(): Int = {
+
      val x = scala.util.Random.nextInt(10) //0-9
      x match {
        case 0 => pos += 1 //10% move right
        case 1 => pos -= 1 //10% move left
        case _ => //80% chance stand still
      }
-     pos = wrap(pos)
-     return pos
+
+     return super.step
    }
  }
 
@@ -81,6 +91,7 @@ object Peer {
  class RandomMover(initialPos: Int) extends Peer(initialPos) {
 
    override def step(): Int = {
+
      val r = scala.util.Random
      val x = r.nextInt(3) //0-2
      val speed = r.nextInt(3) + 1 //1-3
@@ -89,8 +100,8 @@ object Peer {
        case 1 => pos = pos - speed
        case 2 => // stand still
      }
-     pos = wrap(pos)
-     return pos
+
+     return super.step
    }
  }
 
@@ -103,11 +114,11 @@ object Peer {
    override def step(): Int = {
      // small chance of not moving
      if (scala.util.Random.nextInt(15) == 0) {
-       return wrap(pos)
+       return super.step
      }
      if (direction == 0) pos += speed else pos -= speed
-     pos = wrap(pos)
-     return pos
+
+     return super.step
    }
  }
 
