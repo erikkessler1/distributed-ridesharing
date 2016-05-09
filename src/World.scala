@@ -107,6 +107,12 @@ class World(peers: List[Peer]) {
     print(ANSI.restore + ANSI.right(2))
   }
 
+  /**
+   * Prints the world line based on the list of peers.
+   * Prints the focused peer as a purple block in the center of the line.
+   * Prints all peers in the area as grey blocks if they are unknown to
+   * the current focus and as cyan if they are know.
+   */ 
   def makeWorldLine() = {
 
     // Get all the peers in range of the current focus
@@ -124,7 +130,10 @@ class World(peers: List[Peer]) {
       if (i == focusedPeer.pos) {
 	ANSI.style(List(ANSI.PURPLE), "█") 
       } else if (peersInRange.exists(_.pos == i)) {
-        ANSI.style(List(ANSI.GRAY), "█")
+        if (focusedPeer.peerList.exists(_.pos == i))
+	  ANSI.style(List(ANSI.CYAN), "█")
+	else
+	  ANSI.style(List(ANSI.GRAY), "█")
       } else 
 	" ")
     }
@@ -161,6 +170,7 @@ class World(peers: List[Peer]) {
    */ 
   def setFocus(n: Int) = {
     focusedPeer = peers(n)
+    focusedPeer.peerList = peers.filter(_.pos % 2 == 0)
     printWorld()
   }
 
