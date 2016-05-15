@@ -151,6 +151,7 @@ class World(peers: List[Peer]) {
     (line, ids)
   }
 
+  // Prints the gound line as alternating +++++++======
   def makeGroundLine() = {
     val modPos = focusedPeer.pos % 12
 
@@ -163,14 +164,20 @@ class World(peers: List[Peer]) {
     section * 11
   }
 
+  /**
+   * Convert array of ids into a string that can be printed to show the ids of
+   * the peers.
+   */ 
   def idsToCols(ids: Array[Int]) = {
+    // Find the max id
     val max = ids.max
+
+    // Round max down to nearest power of 10
     var ten = (max + 9) / 10
 
     var line = ""
     while (ten != 0) {
-      for (i <- 0 until ids.length) {
-	val id = ids(i)
+      for ((id,i) <- ids.zipWithIndex) {
 	line += (id match {
 	    case -1 => " "
 	    case n  => val res = n / ten; ids(i) = n % ten; res
