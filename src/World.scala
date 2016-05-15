@@ -99,8 +99,9 @@ class World(peers: List[Peer]) {
     print(ANSI.move(4, 0))
 
     // Calculate the world line
-    print(makeWorldLine + makeGroundLine )
-
+    val (worldLine,ids) = makeWorldLine
+    print(worldLine + makeGroundLine )
+    print(idsToCols(ids))
     // Print the log
 
     print(ANSI.move(15 + Command.commands.size, 0) + ANSI.right(2))
@@ -114,6 +115,8 @@ class World(peers: List[Peer]) {
    */ 
   def makeWorldLine() = {
 
+    val ids = new Array[Int](WIDTH)
+
     // Get all the peers in range of the current focus
     val right = focusedPeer.pos + (WIDTH / 2) - 1
     val left = focusedPeer.pos - (WIDTH / 2)
@@ -123,20 +126,29 @@ class World(peers: List[Peer]) {
 
     // Add the correct character and color for each place on the line
     var line = ""
-    for (i <- range) {
+    var i = 0
+    for (p <- range) {
 
       line += (
-      if (i == focusedPeer.pos) {
+      if (p == focusedPeer.pos) {
+	ids(i) = focusedPeer.id
 	ANSI.style(List(ANSI.PURPLE), "█") 
-      } else if (peersInRange.exists(_.pos == i)) {
-        if (focusedPeer.peerList.exists(_.pos == i))
+      } else if (peersInRange.exists(_.pos == p)) {
+        if (focusedPeer.peerList.exists(_.pos == p)) {
+	  ids(i) = focusedPeer.peerList.find(_.pos == p).get.id
 	  ANSI.style(List(ANSI.CYAN), "█")
-	else
+	} else {
+	  ids(i) = peersInRange.find(_.pos == p).get.id
 	  ANSI.style(List(ANSI.GRAY), "█")
-      } else 
-	" ")
+	}
+      } else {
+	ids(i) = -1
+	" "
+      })
+
+      i += 1
     }
-    line
+    (line, ids)
   }
 
   def makeGroundLine() = {
@@ -149,6 +161,26 @@ class World(peers: List[Peer]) {
     }
 
     section * 11
+  }
+
+  def idsToCols(ids: Array[Int]) = {
+    val max = ids.max
+    var ten = (max + 9) / 10
+
+    var line = ""
+    while (ten != 0) {
+      for (i <- 0 until ids.length) {
+	val id = ids(i)
+	line += (id match {
+	    case -1 => " "
+	    case n  => val res = n / ten; ids(i) = n % ten; res
+	})
+      }
+      ten /= 10
+      line += "\n"
+    }
+
+    line
   }
 
   private def getNextPeer(peers: List[Peer]) = {

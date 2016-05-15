@@ -26,7 +26,7 @@ object Peer {
 }
 
  // Base class for all types of Peers
- abstract class Peer(id: Int, initialPos: Int) {
+ abstract class Peer(val id: Int, initialPos: Int) {
    // position of the peer in the world
    var pos: Int = initialPos
 

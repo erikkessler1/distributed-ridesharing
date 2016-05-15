@@ -24,15 +24,15 @@ object Simulator {
 
   def initializePeers(n: Int) : List[Peer] = {
     var list : List[Peer] = Nil
-    for (i <- 0 until n) {
+    for (i <- 1 to n) {
       val random = scala.util.Random.nextInt(6) //0-5
       val initialPosition = scala.util.Random.nextInt(Util.worldSize + 1) //0-worldSize (using 1000)
       list = random match {
-        case 0 => new Commuter(i, initialPosition) :: list
-        case 1 => new RandomMover(i, initialPosition) :: list
-        case 2 => new Traveler(i, initialPosition) :: list
+        case 0 => new Commuter(n - i, initialPosition) :: list
+        case 1 => new RandomMover(n - i, initialPosition) :: list
+        case 2 => new Traveler(n - i, initialPosition) :: list
         // 3x as likely to be a passenger so that there are half drivers, half passengers
-        case _ => new Passenger(i, initialPosition) :: list
+        case _ => new Passenger(n - i, initialPosition) :: list
       }
     }
     return list
