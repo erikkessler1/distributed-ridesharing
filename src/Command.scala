@@ -8,7 +8,7 @@ object Command {
   /**
    * All commands available
    */ 
-  val commands: List[WorldCommand] = List(new StepCommand(), new FocusCommand())
+  val commands: List[WorldCommand] = List(new StepCommand(), new FocusCommand(), new MessagesCommand(), new RidesCommand())
 
   /**
    * Execute command, op, with args on the world
@@ -74,5 +74,19 @@ class FocusCommand() extends WorldCommand("f", "[n]", "Set focus on peer n.") {
       case Some(n) => world.setFocus(n); s"Focus set to peer $n"
       case None    => "Peer not found"
     }
+  }
+}
+
+class MessagesCommand() extends WorldCommand("m", "", "Print total messages sent.") {
+
+  override def execute(world: World, args: List[String]) = {
+    Util.sentMessages + " total messages sent."
+  }
+}
+
+class RidesCommand() extends WorldCommand("r", "", "Print ratio of ride matching.") {
+
+  override def execute(world: World, args: List[String]) = {
+    s"${Util.matches}/${Util.requests} of rides requests serviced"
   }
 }
