@@ -26,7 +26,7 @@ object Simulator {
 
   def initializePeers(n: Int) : List[Peer] = {
     var list : List[Peer] = Nil
-    for (i <- 1 until n) {
+    for (i <- 1 to n) {
       val random = scala.util.Random.nextInt(6) //0-5
       val initialPosition = scala.util.Random.nextInt(Util.worldSize + 1) //0-worldSize (using 1000)
       list = random match {
@@ -37,10 +37,10 @@ object Simulator {
         case _ => new Passenger(n - i, initialPosition) :: list
       }
     }
-    list = new Passenger(n-1,20) :: list
 
     for (peer <- list) {
       peer.setPeerList(List.fill(10)(list(scala.util.Random.nextInt(n - 1) + 1)))
+      //peer.setPeerList(list.filter(_ != peer))
     }
 
     return list

@@ -11,7 +11,6 @@ object Util {
 
   def sendRequest(sender: Peer, reciever: Peer) : Boolean = {
     sentMessages += 2
-    rideRequests += 1
     val matched = reciever.respondToRequest(sender)
     if (matched) matches += 1
     return matched
@@ -21,7 +20,7 @@ object Util {
 
   var verbose = false
 
-  val matchDist = 100
+  val matchDist = 10
 
   val rideLength = 10
 
