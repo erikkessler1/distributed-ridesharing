@@ -33,7 +33,7 @@ object Peer {
    // other nodes that this node is currently in communication with
    var peerList : List[Peer] = Nil
 
-   var peerLog = List(s"Peer $id created.")
+   var peerLog = List(s"Peer $id created.    ")
 
    // moves the peer through the world at each time step
    def step(): Int = {
@@ -43,14 +43,14 @@ object Peer {
    }
 
    def logPosition(oldPos : Int) : Unit = {
-     if (Util.verbose) peerLog = s"Moved from $oldPos to $pos" :: peerLog
+     if (Util.verbose) peerLog = s"Moved from $oldPos to $pos    " :: peerLog
    }
 
    // helper function to ensure that the peer wraps around when it reaches the end of the world
    private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
 
    private def updatePeerList() = {
-     
+
    }
  }
 
