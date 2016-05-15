@@ -141,6 +141,7 @@ class World(peers: List[Peer]) {
 	      } else {
 	         ids(i) = peersInRange.find(_.pos == p).get.id
 	         ANSI.style(List(ANSI.GRAY), "█")
+        }
       } else {
 	       ids(i) = -1
 	        " "
