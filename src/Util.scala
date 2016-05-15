@@ -11,5 +11,7 @@ object Util {
 
   val worldSize = 1200
 
+  var verbose = false
+
 
 }

@@ -13,6 +13,8 @@ object Simulator {
 
   def main(args: Array[String]): Unit = {
 
+    Util.verbose = if (args.length > 0 && args(0) == "-v") true else false
+
     val numberOfPeers = if (args.length > 0) Util.toInt(args(0)).getOrElse(100) else 100
 
     // Initialize a list of some number of peers, as specified by user input

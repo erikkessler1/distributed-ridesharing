@@ -33,6 +33,8 @@ object Peer {
    // other nodes that this node is currently in communication with
    var peerList : List[Peer] = Nil
 
+   var peerLog = List(s"Peer $id created.")
+
    // moves the peer through the world at each time step
    def step(): Int = {
      pos = wrap(pos)
@@ -40,11 +42,15 @@ object Peer {
      pos
    }
 
+   def logPosition(oldPos : Int) : Unit = {
+     if (Util.verbose) peerLog = s"Moved from $oldPos to $pos" :: peerLog
+   }
+
    // helper function to ensure that the peer wraps around when it reaches the end of the world
    private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
 
    private def updatePeerList() = {
-
+     
    }
  }
 
@@ -58,6 +64,7 @@ object Peer {
 
    override def step(): Int = {
 
+     val oldPos = pos
      if (progress < commuteLength) {
        if (direction == 0) pos += speed else pos -= speed //move
        progress = progress + speed //update progress
@@ -67,6 +74,7 @@ object Peer {
        progress = 0 // reset progress
      }
 
+     logPosition(oldPos)
      return super.step
    }
  }
@@ -76,6 +84,7 @@ object Peer {
 
    override def step(): Int = {
 
+     val oldPos = pos
      val x = scala.util.Random.nextInt(10) //0-9
      x match {
        case 0 => pos += 1 //10% move right
@@ -83,6 +92,7 @@ object Peer {
        case _ => //80% chance stand still
      }
 
+     logPosition(oldPos)
      return super.step
    }
  }
@@ -92,6 +102,7 @@ object Peer {
 
    override def step(): Int = {
 
+     val oldPos = pos
      val r = scala.util.Random
      val x = r.nextInt(3) //0-2
      val speed = r.nextInt(3) + 1 //1-3
@@ -101,6 +112,7 @@ object Peer {
        case 2 => // stand still
      }
 
+     logPosition(oldPos)
      return super.step
    }
  }
@@ -112,12 +124,15 @@ object Peer {
    val speed = scala.util.Random.nextInt(3) + 1 //1-3
 
    override def step(): Int = {
+
+     val oldPos = pos
      // small chance of not moving
      if (scala.util.Random.nextInt(15) == 0) {
        return super.step
      }
      if (direction == 0) pos += speed else pos -= speed
 
+     logPosition(oldPos)
      return super.step
    }
  }
