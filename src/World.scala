@@ -186,10 +186,10 @@ class World(peers: List[Peer]) {
 
   def printPeerList() : Unit = {
     var h = 12
-    for (peer <- focusedPeer.getPeerList) {
+    for ((id, pos) <- focusedPeer.getPeerLocs) {
       h += 1
       if (h >= HEIGHT) return
-      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${peer.id}, Location ${peer.pos}    ")
+      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${id}, Location ${pos}    ")
     }
   }
 
