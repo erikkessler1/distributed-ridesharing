@@ -30,6 +30,7 @@ class World(peers: List[Peer]) {
     createWorldLine()
     createDividingLine()
     createLogArea()
+    createPeerListArea()
     createCommandPrompt()
   }
 
@@ -51,6 +52,12 @@ class World(peers: List[Peer]) {
   private def createLogArea() : Unit = {
     print(ANSI.move(12, WIDTH/2 + 1) +
 	  ANSI.style(List(ANSI.BOLD, ANSI.UNDERLINE), "Log for Current Peer:"))
+  }
+
+  // Area for log entries for the current node.
+  private def createPeerListArea() : Unit = {
+    print(ANSI.move(12, 3*WIDTH/4 + 1) +
+    ANSI.style(List(ANSI.BOLD, ANSI.UNDERLINE), "Current Peer's List:"))
   }
 
   // Command prompt for controlling the world.
@@ -104,6 +111,8 @@ class World(peers: List[Peer]) {
     print(idsToCols(ids))
     // Print the log
     printLog()
+    // Print the focused node's list of peers
+    printPeerList()
 
     print(ANSI.move(15 + Command.commands.size, 0) + ANSI.right(2))
   }
@@ -175,10 +184,19 @@ class World(peers: List[Peer]) {
     }
   }
 
+  def printPeerList() : Unit = {
+    var h = 12
+    for (peer <- focusedPeer.peerList) {
+      h += 1
+      if (h >= HEIGHT) return
+      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${peer.id}, location ${peer.pos}")
+    }
+  }
+
   /**
    * Convert array of ids into a string that can be printed to show the ids of
    * the peers.
-   */ 
+   */
   def idsToCols(ids: Array[Int]) = {
     // Find the max id
     val max = ids.max
