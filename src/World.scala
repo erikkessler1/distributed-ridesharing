@@ -3,7 +3,7 @@
  * and provides methods to display itself on the terminal.
  *
  * We assume a linear world that wraps around.
- * 
+ *
  * Erik Kessler and Kevin Persons
  */
 class World(peers: List[Peer]) {
@@ -14,7 +14,7 @@ class World(peers: List[Peer]) {
 
   /**
    * Setup the world and begin accepting commands to control the world.
-   */ 
+   */
   def start() = {
     printInitialWorld()
     handleCommands()
@@ -25,7 +25,7 @@ class World(peers: List[Peer]) {
   /**
    * Prints the template for the world.
    */
-  private def printInitialWorld() = { 
+  private def printInitialWorld() = {
     print(ANSI.clear)
     createWorldLine()
     createDividingLine()
@@ -48,14 +48,14 @@ class World(peers: List[Peer]) {
   }
 
   // Area for log entries for the current node.
-  private def createLogArea() = {
-    print(ANSI.move(12, WIDTH/2 + 1) + 
+  private def createLogArea() : Unit = {
+    print(ANSI.move(12, WIDTH/2 + 1) +
 	  ANSI.style(List(ANSI.BOLD, ANSI.UNDERLINE), "Log for Current Peer:"))
   }
 
   // Command prompt for controlling the world.
   private def createCommandPrompt() = {
-    print(ANSI.move(12, 0) + 
+    print(ANSI.move(12, 0) +
 	  ANSI.style(List(ANSI.BOLD, ANSI.UNDERLINE), "Command Prompt:"))
     print(ANSI.move(14, 0))
     printInstructions()
@@ -75,8 +75,8 @@ class World(peers: List[Peer]) {
   private def handleCommands() = {
     for (ln <- io.Source.stdin.getLines) {
 
-      print(ANSI.up(1) + ANSI.right(ln.length + 3) + ANSI.delete + ANSI.left(ln.length + 3) + "-> ") 
-      
+      print(ANSI.up(1) + ANSI.right(ln.length + 3) + ANSI.delete + ANSI.left(ln.length + 3) + "-> ")
+
       val command = ln.split(" ")(0)
       val args = ln.split(" ").toList.tail
 
@@ -89,11 +89,11 @@ class World(peers: List[Peer]) {
   }
 
   /* METHODS FOR PRINTING THE WORLD */
-   
+
   /**
    * Prints the updated positions of the world.
-   */ 
-  def printWorld() = { 
+   */
+  def printWorld() = {
 
     // Move to correct place for the line
     print(ANSI.move(4, 0))
@@ -103,6 +103,7 @@ class World(peers: List[Peer]) {
     print(worldLine + makeGroundLine )
     print(idsToCols(ids))
     // Print the log
+    printLog()
 
     print(ANSI.move(15 + Command.commands.size, 0) + ANSI.right(2))
   }
@@ -112,7 +113,7 @@ class World(peers: List[Peer]) {
    * Prints the focused peer as a purple block in the center of the line.
    * Prints all peers in the area as grey blocks if they are unknown to
    * the current focus and as cyan if they are know.
-   */ 
+   */
   def makeWorldLine() = {
 
     val ids = new Array[Int](WIDTH)
@@ -131,19 +132,18 @@ class World(peers: List[Peer]) {
 
       line += (
       if (p == focusedPeer.pos) {
-	ids(i) = focusedPeer.id
-	ANSI.style(List(ANSI.PURPLE), "█") 
+	       ids(i) = focusedPeer.id
+	        ANSI.style(List(ANSI.PURPLE), "█")
       } else if (peersInRange.exists(_.pos == p)) {
         if (focusedPeer.peerList.exists(_.pos == p)) {
-	  ids(i) = focusedPeer.peerList.find(_.pos == p).get.id
-	  ANSI.style(List(ANSI.CYAN), "█")
-	} else {
-	  ids(i) = peersInRange.find(_.pos == p).get.id
-	  ANSI.style(List(ANSI.GRAY), "█")
-	}
+	         ids(i) = focusedPeer.peerList.find(_.pos == p).get.id
+	          ANSI.style(List(ANSI.CYAN), "█")
+	      } else {
+	         ids(i) = peersInRange.find(_.pos == p).get.id
+	         ANSI.style(List(ANSI.GRAY), "█")
       } else {
-	ids(i) = -1
-	" "
+	       ids(i) = -1
+	        " "
       })
 
       i += 1
@@ -162,6 +162,16 @@ class World(peers: List[Peer]) {
     }
 
     section * 11
+  }
+
+
+  def printLog() : Unit = {
+    var h = 12
+    for (msg <- focusedPeer.peerLog) {
+      h += 1
+      if (h >= HEIGHT) return
+      print(ANSI.move(h, WIDTH/2 + 1) + msg)
+    }
   }
 
   /**
@@ -205,7 +215,7 @@ class World(peers: List[Peer]) {
 
   /**
    * Changes which peer the world is centered on.
-   */ 
+   */
   def setFocus(n: Int) = {
     focusedPeer = peers(n)
     focusedPeer.peerList = peers.filter(_.pos % 2 == 0)
@@ -214,7 +224,7 @@ class World(peers: List[Peer]) {
 
   /**
    * Moves the world forward one step.
-   */ 
+   */
   def step(steps: Int, delay: Int) = {
     for (i <- 1 to steps) {
       peers.foreach { _.step() }
