@@ -181,7 +181,7 @@ class World(peers: List[Peer]) {
    */ 
   def idsToCols(ids: Array[Int]) = {
     // Find the max id
-    val max = ids.max
+    val max = peers.length - 1
 
     // Round max down to nearest power of 10
     var ten = (max + 9) / 10
