@@ -1,19 +1,19 @@
 /**
  * Provides a way to issue commands to a World.
- * 
+ *
  * Erik Kessler and Kevin Persons
- */ 
+ */
 object Command {
 
   /**
    * All commands available
-   */ 
+   */
   val commands: List[WorldCommand] = List(new StepCommand(), new FocusCommand(), new MessagesCommand(), new RidesCommand())
 
   /**
    * Execute command, op, with args on the world
-   */ 
-  def execute(world: World, op: String, args: List[String]) = 
+   */
+  def execute(world: World, op: String, args: List[String]) =
     // Find and execute the command that matches
     commands.find(_.c == op) match {
       case Some(command) => command.execute(world, args)
@@ -28,8 +28,8 @@ object Command {
  *
  * Concrete classes implement the execute method which defines whath the command
  * does.
- */ 
-abstract class WorldCommand(val c: String, val args: String, val description: String) { 
+ */
+abstract class WorldCommand(val c: String, val args: String, val description: String) {
 
   def execute(world: World, args: List[String]): String
 
@@ -39,7 +39,7 @@ abstract class WorldCommand(val c: String, val args: String, val description: St
 
 /**
  * Command for stepping the world forward one time unit.
- */ 
+ */
 class StepCommand() extends WorldCommand("s", "[n] [d]", "Step simulation n steps with d delay.") {
 
   override def execute(world: World, args: List[String]) = {
@@ -60,7 +60,7 @@ class StepCommand() extends WorldCommand("s", "[n] [d]", "Step simulation n step
 
 /**
  * Command for setting the focus on a specific node.
- */ 
+ */
 class FocusCommand() extends WorldCommand("f", "[n]", "Set focus on peer n.") {
 
   override def execute(world: World, args: List[String]) = {

@@ -41,7 +41,6 @@ abstract class Peer(val id: Int, initialPos: Int) {
       true
     }
     else {
-      peer.logRejection(this.id, rideLength)
       false
     }
   }
@@ -58,7 +57,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
    peerList = peers
   }
 
-  var peerLog = List(s"Peer $id created.    ")
+  var peerLog = List(s"P$id created.    ")
 
   // moves the peer through the world at each time step
   def step(): Int = {
@@ -72,24 +71,20 @@ abstract class Peer(val id: Int, initialPos: Int) {
     pos
   }
 
-  def logRejection(id: Int, rideLength: Int) : Unit = {
-    peerLog = s"rejected by $id, length $rideLength  " :: peerLog
-  }
-
   def logPosition(oldPos : Int) : Unit = {
     if (Util.verbose) peerLog = s"Moved from $oldPos to $pos    " :: peerLog
   }
 
   def logGivingRide(passenger: Int, rideLength: Int) = {
-    peerLog = s"Driving peer $passenger for $rideLength steps.    " :: peerLog
+    peerLog = s"Driving P$passenger, $rideLength steps.    " :: peerLog
   }
 
   def logGettingRide(driver: Int, rideLength: Int) = {
-    peerLog = s"Riding with peer $driver for $rideLength steps.    " :: peerLog
+    peerLog = s"Riding with P$driver, $rideLength steps.    " :: peerLog
   }
 
   def logRideEnd() = {
-    peerLog = s"Ride ended.    " :: peerLog
+    peerLog = s"Ride ended.                                 " :: peerLog
   }
 
   def getPeerList() = peerList
@@ -133,9 +128,18 @@ class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 // Doesn't have a ride -- they are mostly standing still
 class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
+  var status = 0
+
   override def step(): Int = {
 
-    if (!matched) sendRideRequest()
+    if (!matched && status == 0 && scala.util.Random.nextInt(9) == 0) {
+      status = 5
+      sendRideRequest(true)
+    }
+    if (status > 0) {
+      status -= 1
+      sendRideRequest(false)
+    }
 
     val oldPos = pos
     val x = scala.util.Random.nextInt(10) //0-9
@@ -151,7 +155,8 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
   override def respondToRequest(peer: Peer) : Boolean = false
 
-  def sendRideRequest() : Unit = {
+  def sendRideRequest(newRequest :Boolean) : Unit = {
+    if (newRequest) Util.rideRequests += 1
     for((id,_) <- peerLocs) {
       if (Util.sendRequest(this, peerList.find(_.id == id).get)) {
         matched = true

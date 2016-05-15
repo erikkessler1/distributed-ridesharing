@@ -189,7 +189,7 @@ class World(peers: List[Peer]) {
     for ((id, pos) <- focusedPeer.getPeerLocs) {
       h += 1
       if (h >= HEIGHT) return
-      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${id}, Location ${pos}    ")
+      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"P${id}, Location ${pos}    ")
     }
   }
 
