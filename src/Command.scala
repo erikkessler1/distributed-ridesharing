@@ -87,6 +87,6 @@ class MessagesCommand() extends WorldCommand("m", "", "Print total messages sent
 class RidesCommand() extends WorldCommand("r", "", "Print ratio of ride matching.") {
 
   override def execute(world: World, args: List[String]) = {
-    s"${Util.matches}/${Util.requests} of rides requests serviced"
+    s"${Util.matches}/${Util.rideRequests} of rides requests serviced"
   }
 }
