@@ -12,10 +12,10 @@ object Peer {
   def main(args: Array[String]) = {
     var com : Peer = null
     args(0) match {
-      case "Commuter" => com = new Commuter(20)
-      case "Passenger" => com = new Passenger(20)
-      case "RandomMover" => com = new RandomMover(20)
-      case "Traveler" => com = new Traveler(20)
+      case "Commuter" => com = new Commuter(0, 20)
+      case "Passenger" => com = new Passenger(0, 20)
+      case "RandomMover" => com = new RandomMover(0, 20)
+      case "Traveler" => com = new Traveler(0, 20)
     }
     var i = 0
     while (i < 50) {
@@ -26,7 +26,7 @@ object Peer {
 }
 
  // Base class for all types of Peers
- abstract class Peer(initialPos: Int) {
+ abstract class Peer(id: Int, initialPos: Int) {
    // position of the peer in the world
    var pos: Int = initialPos
 
@@ -49,7 +49,7 @@ object Peer {
  }
 
  // Commutes a certain distance back and forth repeatedly
- class Commuter(initialPos: Int) extends Peer(initialPos) {
+ class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
    val commuteLength = scala.util.Random.nextInt(46) + 15 //15-60
    val speed = scala.util.Random.nextInt(3) + 1 //1-3
@@ -72,7 +72,7 @@ object Peer {
  }
 
  // Doesn't have a ride -- they are mostly standing still
- class Passenger(initialPos: Int) extends Peer(initialPos) {
+ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
    override def step(): Int = {
 
@@ -88,7 +88,7 @@ object Peer {
  }
 
  // Randomly moves around at various speeds or stands still
- class RandomMover(initialPos: Int) extends Peer(initialPos) {
+ class RandomMover(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
    override def step(): Int = {
 
@@ -106,7 +106,7 @@ object Peer {
  }
 
  // Moves consistently in one direction, sometimes pausing
- class Traveler(initialPos: Int) extends Peer(initialPos) {
+ class Traveler(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
    val direction = scala.util.Random.nextInt(2) //0-1
    val speed = scala.util.Random.nextInt(3) + 1 //1-3
