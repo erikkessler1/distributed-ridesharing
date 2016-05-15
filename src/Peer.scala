@@ -106,6 +106,8 @@ class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
      logPosition(oldPos)
      return super.step
    }
+
+  override def duplicate() = new Passenger(this.id, this.pos)
  }
 
  // Randomly moves around at various speeds or stands still
@@ -126,6 +128,8 @@ class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
      logPosition(oldPos)
      return super.step
    }
+
+  override def duplicate() = new RandomMover(this.id, this.pos)
  }
 
  // Moves consistently in one direction, sometimes pausing
@@ -146,6 +150,8 @@ class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
      logPosition(oldPos)
      return super.step
    }
+
+  override def duplicate() = new Traveler(this.id, this.pos)
  }
 
  /*

@@ -39,7 +39,7 @@ object Simulator {
     }
 
     for (peer <- list) {
-      peer.peerList = List.fill(10)(list(scala.util.Random.nextInt(n - 1) + 1))
+      peer.setPeerList(List.fill(10)(list(scala.util.Random.nextInt(n - 1) + 1)))
     }
 
     return list
