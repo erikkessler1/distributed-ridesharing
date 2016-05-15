@@ -141,19 +141,19 @@ class World(peers: List[Peer]) {
 
       line += (
       if (p == focusedPeer.pos) {
-	       ids(i) = focusedPeer.id
-	        ANSI.style(List(ANSI.PURPLE), "█")
+	ids(i) = focusedPeer.id
+	ANSI.style(List(ANSI.PURPLE), "█")
       } else if (peersInRange.exists(_.pos == p)) {
-        if (focusedPeer.peerList.exists(_.pos == p)) {
-	         ids(i) = focusedPeer.peerList.find(_.pos == p).get.id
-	          ANSI.style(List(ANSI.CYAN), "█")
-	      } else {
-	         ids(i) = peersInRange.find(_.pos == p).get.id
-	         ANSI.style(List(ANSI.GRAY), "█")
+        if (focusedPeer.getPeerList.exists(_.pos == p)) {
+	  ids(i) = focusedPeer.getPeerList.find(_.pos == p).get.id
+	  ANSI.style(List(ANSI.CYAN), "█")
+	} else {
+	  ids(i) = peersInRange.find(_.pos == p).get.id
+	  ANSI.style(List(ANSI.GRAY), "█")
         }
       } else {
-	       ids(i) = -1
-	        " "
+	ids(i) = -1
+	" "
       })
 
       i += 1
@@ -186,7 +186,7 @@ class World(peers: List[Peer]) {
 
   def printPeerList() : Unit = {
     var h = 12
-    for (peer <- focusedPeer.peerList) {
+    for (peer <- focusedPeer.getPeerList) {
       h += 1
       if (h >= HEIGHT) return
       print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${peer.id}, location ${peer.pos}")

@@ -26,48 +26,56 @@ object Peer {
 }
 
  // Base class for all types of Peers
- abstract class Peer(val id: Int, initialPos: Int) {
-   // position of the peer in the world
-   var pos: Int = initialPos
+abstract class Peer(val id: Int, initialPos: Int) {
+  // position of the peer in the world
+  var pos: Int = initialPos
 
-   // other nodes that this node is currently in communication with
-   var peerList : List[Peer] = Nil
+  // other nodes that this node is currently in communication with
+  private var peerList : List[Peer] = Nil
 
-   var peerLog = List(s"Peer $id created.")
+  def setPeerList(peers: List[Peer]) = {
+   peerList = peers.map(_.duplicate)
+  }
 
-   // moves the peer through the world at each time step
-   def step(): Int = {
-     pos = wrap(pos)
-     updatePeerList()
-     pos
-   }
+  var peerLog = List(s"Peer $id created.")
 
-   def logPosition(oldPos : Int) : Unit = {
-     if (Util.verbose) peerLog = s"Moved from $oldPos to $pos" :: peerLog
-   }
+  // moves the peer through the world at each time step
+  def step(): Int = {
+    pos = wrap(pos)
+    updatePeerList()
+    pos
+  }
 
-   // helper function to ensure that the peer wraps around when it reaches the end of the world
-   private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
+  def logPosition(oldPos : Int) : Unit = {
+    if (Util.verbose) peerLog = s"Moved from $oldPos to $pos" :: peerLog
+  }
 
-   private def updatePeerList() = {
-     
-   }
+  def getPeerList() = peerList
+
+  // helper function to ensure that the peer wraps around when it reaches the end of the world
+  private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
+
+  private def updatePeerList() = {
+    
+  }
+
+  def duplicate(): Peer
  }
 
- // Commutes a certain distance back and forth repeatedly
- class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
+// Commutes a certain distance back and forth repeatedly
+class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
-   val commuteLength = scala.util.Random.nextInt(46) + 15 //15-60
-   val speed = scala.util.Random.nextInt(3) + 1 //1-3
-   var progress = 0
-   var direction = commuteLength % 2
+  val commuteLength = scala.util.Random.nextInt(46) + 15 //15-60
+  val speed = scala.util.Random.nextInt(3) + 1 //1-3
+  var progress = 0
+  var direction = commuteLength % 2
 
-   override def step(): Int = {
+  override def step(): Int = {
 
-     val oldPos = pos
-     if (progress < commuteLength) {
-       if (direction == 0) pos += speed else pos -= speed //move
-       progress = progress + speed //update progress
+    val oldPos = pos
+    if (progress < commuteLength) {
+      if (direction == 0) pos += speed else pos -= speed //move
+      progress = progress + speed //update progress
      }
      else {
        direction = (direction + 1) % 2 // reverse direction
@@ -76,8 +84,10 @@ object Peer {
 
      logPosition(oldPos)
      return super.step
-   }
- }
+  }
+
+  override def duplicate() = new Commuter(this.id, this.pos)
+}
 
  // Doesn't have a ride -- they are mostly standing still
  class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
