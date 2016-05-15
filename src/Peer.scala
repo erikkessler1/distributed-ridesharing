@@ -33,11 +33,12 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // other nodes that this node is currently in communication with
   private var peerList : List[Peer] = Nil
 
+
   def setPeerList(peers: List[Peer]) = {
    peerList = peers.map(_.duplicate)
   }
 
-  var peerLog = List(s"Peer $id created.")
+  var peerLog = List(s"Peer $id created.    ")
 
   // moves the peer through the world at each time step
   def step(): Int = {
@@ -47,7 +48,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   }
 
   def logPosition(oldPos : Int) : Unit = {
-    if (Util.verbose) peerLog = s"Moved from $oldPos to $pos" :: peerLog
+    if (Util.verbose) peerLog = s"Moved from $oldPos to $pos    " :: peerLog
   }
 
   def getPeerList() = peerList

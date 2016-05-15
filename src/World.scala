@@ -189,7 +189,7 @@ class World(peers: List[Peer]) {
     for (peer <- focusedPeer.getPeerList) {
       h += 1
       if (h >= HEIGHT) return
-      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${peer.id}, location ${peer.pos}")
+      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"Peer ${peer.id}, Location ${peer.pos}    ")
     }
   }
 
@@ -207,14 +207,14 @@ class World(peers: List[Peer]) {
     var line = ""
     while (ten != 0) {
       for ((id,i) <- ids.zipWithIndex) {
-	
+
 	// Add the digit. Take the mod
 	line += (id match {
 	    case -1 => " "
 	    case n  => val res = n / ten; ids(i) = n % ten; res
 	})
       }
-      
+
       // Move to a lower power of 10
       ten /= 10
       line += "\n"
@@ -241,7 +241,7 @@ class World(peers: List[Peer]) {
    */
   def setFocus(n: Int) = {
     focusedPeer = peers(n)
-    focusedPeer.peerList = peers.filter(_.pos % 2 == 0)
+    //focusedPeer.peerList = peers.filter(_.pos % 2 == 0)
     printWorld()
   }
 
