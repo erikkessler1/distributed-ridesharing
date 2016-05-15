@@ -207,16 +207,20 @@ class World(peers: List[Peer]) {
     var line = ""
     while (ten != 0) {
       for ((id,i) <- ids.zipWithIndex) {
+	
+	// Add the digit. Take the mod
 	line += (id match {
 	    case -1 => " "
 	    case n  => val res = n / ten; ids(i) = n % ten; res
 	})
       }
+      
+      // Move to a lower power of 10
       ten /= 10
       line += "\n"
     }
 
-    line
+    line // Return the string
   }
 
   private def getNextPeer(peers: List[Peer]) = {
