@@ -30,13 +30,31 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // position of the peer in the world
   var pos: Int = initialPos
 
-  // other nodes that this node is currently in communication with
-  private var peerList : List[Peer] = Nil
+  // current ride-matched status of this peer
+  protected var matched = false
 
-  private var peerLocs : List[(Int,Int)] = Nil
+  def respondToRequest(peer: Peer) : Boolean = {
+    if (!matched && math.abs(peer.pos - pos) < Util.matchDist) {
+      matched = true
+      rideLength = Util.rideLength
+      logGivingRide(peer.id, rideLength)
+      true
+    }
+    else {
+      peer.logRejection(this.id, rideLength)
+      false
+    }
+  }
+
+  // other nodes that this node is currently in communication with
+  protected var peerList : List[Peer] = Nil
+
+  protected var peerLocs : List[(Int,Int)] = Nil
+
+  protected var rideLength = 0
 
   def setPeerList(peers: List[Peer]) = {
-   peerLocs = peers.map(p => (p.id, p.pos))
+   peerLocs = peers.map(p => (p.id, p.pos)).sortBy({case (_,p) => p})
    peerList = peers
   }
 
@@ -44,13 +62,34 @@ abstract class Peer(val id: Int, initialPos: Int) {
 
   // moves the peer through the world at each time step
   def step(): Int = {
+    rideLength match {
+      case 0 =>
+      case 1 => rideLength -= 1; matched = false; logRideEnd()
+      case _ => rideLength -= 1
+    }
     pos = wrap(pos)
     updatePeerList()
     pos
   }
 
+  def logRejection(id: Int, rideLength: Int) : Unit = {
+    peerLog = s"rejected by $id, length $rideLength  " :: peerLog
+  }
+
   def logPosition(oldPos : Int) : Unit = {
     if (Util.verbose) peerLog = s"Moved from $oldPos to $pos    " :: peerLog
+  }
+
+  def logGivingRide(passenger: Int, rideLength: Int) = {
+    peerLog = s"Driving peer $passenger for $rideLength steps.    " :: peerLog
+  }
+
+  def logGettingRide(driver: Int, rideLength: Int) = {
+    peerLog = s"Riding with peer $driver for $rideLength steps.    " :: peerLog
+  }
+
+  def logRideEnd() = {
+    peerLog = s"Ride ended.    " :: peerLog
   }
 
   def getPeerList() = peerList
@@ -61,7 +100,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
 
   private def updatePeerList() = {
-    
+
   }
 
  }
@@ -89,13 +128,14 @@ class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
      logPosition(oldPos)
      return super.step
   }
-
 }
 
 // Doesn't have a ride -- they are mostly standing still
 class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
   override def step(): Int = {
+
+    if (!matched) sendRideRequest()
 
     val oldPos = pos
     val x = scala.util.Random.nextInt(10) //0-9
@@ -109,10 +149,24 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     return super.step
   }
 
+  override def respondToRequest(peer: Peer) : Boolean = false
+
+  def sendRideRequest() : Unit = {
+    for((id,_) <- peerLocs) {
+      if (Util.sendRequest(this, peerList.find(_.id == id).get)) {
+        matched = true
+        rideLength = Util.rideLength
+        logGettingRide(id, rideLength)
+        return
+      }
+    }
+  }
 }
 
 // Randomly moves around at various speeds or stands still
 class RandomMover(id: Int, initialPos: Int) extends Peer(id, initialPos) {
+
+  var offering = false
 
   override def step(): Int = {
 
@@ -129,7 +183,6 @@ class RandomMover(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     logPosition(oldPos)
     return super.step
   }
-
 }
 
 // Moves consistently in one direction, sometimes pausing
@@ -150,7 +203,6 @@ class Traveler(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     logPosition(oldPos)
     return super.step
   }
-
 }
 
  /*
