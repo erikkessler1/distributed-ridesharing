@@ -20,8 +20,8 @@ object Simulator {
     // Initialize a list of some number of peers, as specified by user input
     val peers = initializePeers(numberOfPeers)
 
-    val world = new World(peers)
-    world.start()
+    World.peers = peers
+    World.start()
   }
 
   def initializePeers(n: Int) : List[Peer] = {

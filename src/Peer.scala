@@ -30,6 +30,8 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // position of the peer in the world
   var pos: Int = initialPos
 
+  var lastReportedPos: Int = initialPos
+
   // current ride-matched status of this peer
   protected var matched = false
 
@@ -48,12 +50,12 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // other nodes that this node is currently in communication with
   protected var peerList : List[Peer] = Nil
 
-  protected var peerLocs : List[(Int,Int)] = Nil
+  protected var peerLocs : List[FrozenPeer] = Nil
 
   protected var rideLength = 0
 
   def setPeerList(peers: List[Peer]) = {
-   peerLocs = peers.map(p => (p.id, p.pos)).sortBy({case (_,p) => p})
+   peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time)).sortBy(_.pos)
    peerList = peers
   }
 
@@ -67,7 +69,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
       case _ => rideLength -= 1
     }
     pos = wrap(pos)
-    updatePeerList()
+    updatePeerList(pos)
     pos
   }
 
@@ -94,12 +96,21 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // helper function to ensure that the peer wraps around when it reaches the end of the world
   private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
 
-  private def updatePeerList() = {
+  private def updatePeerList(newPos: Int): Unit = {
+    if (math.abs(lastReportedPos - newPos) < Util.updateDist) return
 
+    for(peer <- peerLocs) {
+      val (newPeers, newPos) = Util.sendUpdate(this, peerList.find(peer.id == id).get)
+
+      
+    }
+
+    lastReportedPos = pos
   }
 
- }
+}
 
+class FrozenPeer(val id: Int, val pos: Int, val ts: Int)
 
 /* --TYPES OF PEERS-- */
 
@@ -167,8 +178,8 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     if (newRequest) Util.rideRequests += 1
     
     // Try to match with every peer in the peer list
-    for((id,_) <- peerLocs) {
-      if (Util.sendRequest(this, peerList.find(_.id == id).get)) {
+    for(peer <- peerLocs) {
+      if (Util.sendRequest(this, peerList.find(peer.id == id).get)) {
         matched = true
         rideLength = Util.rideLength
         logGettingRide(id, rideLength)

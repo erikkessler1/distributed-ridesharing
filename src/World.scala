@@ -6,7 +6,10 @@
  *
  * Erik Kessler and Kevin Persons
  */
-class World(peers: List[Peer]) {
+object World {
+
+  var peers: List[Peer] = Nil
+  var time = 0
 
   // Height and width of the terminal window
   private val WIDTH = 132
@@ -16,6 +19,7 @@ class World(peers: List[Peer]) {
    * Setup the world and begin accepting commands to control the world.
    */
   def start() = {
+    time = 0
     printInitialWorld()
     handleCommands()
   }
@@ -250,6 +254,7 @@ class World(peers: List[Peer]) {
    */
   def step(steps: Int, delay: Int) = {
     for (i <- 1 to steps) {
+      time += 1
       peers.foreach { _.step() }
       printWorld()
       if (steps > 1) Thread.sleep(delay)
