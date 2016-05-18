@@ -33,7 +33,7 @@ object Simulator {
     }
     // Initialize incrementally (more realistic)
     else {
-      val firstPeer = createNewPeer(1)
+      val firstPeer = createNewPeer(Util.numPeers)
       World.peers = List(firstPeer)
       World.start()
     }
@@ -66,7 +66,7 @@ object Simulator {
     var list = World.peers
 
     // create n-1 other new peers one at a time
-    var peer = createNewPeer(list.length)
+    var peer = createNewPeer(Util.numPeers - list.length)
     list = peer :: list
 
     // randomly assign each new peer an existing peer to be on its start list
