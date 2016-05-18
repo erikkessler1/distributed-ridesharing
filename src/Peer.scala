@@ -31,6 +31,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   var pos: Int = initialPos
 
   var lastReportedPos: Int = initialPos
+  var lastReportTime: Int = 0
 
   // current ride-matched status of this peer
   protected var matched = false
@@ -97,7 +98,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
     peerLog = s"Got update from ${sender.id}".padTo(45, ' ')::peerLog
   }
 
-  def getPeerList() = peerList
+  def getPeerList() = peerLocs.map(_.peer)
 
   def getPeerLocs() = peerLocs
 
@@ -105,7 +106,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
 
   private def updatePeerList(newPos: Int): Unit = {
-    if (math.abs(lastReportedPos - newPos) < Util.updateDist) return
+    if (math.abs(lastReportedPos - newPos) < Util.updateDist && World.time - lastReportTime < 20) return
 
     logUpdatedPeerList()
 
@@ -125,6 +126,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
     filterNewPeers(newPeerList)
 
     lastReportedPos = pos
+    lastReportTime = World.time
   }
 
   private def filterNewPeers(newPeers: List[FrozenPeer]) = {
