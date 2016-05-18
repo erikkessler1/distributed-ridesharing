@@ -100,6 +100,9 @@ abstract class Peer(val id: Int, initialPos: Int) {
 
  }
 
+
+/* --TYPES OF PEERS-- */
+
 // Commutes a certain distance back and forth repeatedly
 class Commuter(id: Int, initialPos: Int) extends Peer(id, initialPos) {
 
@@ -153,10 +156,17 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     return super.step
   }
 
-  override def respondToRequest(peer: Peer) : Boolean = false
-
-  def sendRideRequest(newRequest :Boolean) : Unit = {
+  /**
+   * The node asks all peers it knows if they can give a ride.
+   * If newRequest is true, we increment our request counter.
+   * It is false when a request spans multiple steps.
+   */ 
+  private def sendRideRequest(newRequest :Boolean) : Unit = {
+    
+    // Increment request count if it is a new request
     if (newRequest) Util.rideRequests += 1
+    
+    // Try to match with every peer in the peer list
     for((id,_) <- peerLocs) {
       if (Util.sendRequest(this, peerList.find(_.id == id).get)) {
         matched = true
@@ -166,6 +176,10 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
       }
     }
   }
+
+  // They don't ever give rides.
+  override def respondToRequest(peer: Peer) : Boolean = false
+
 }
 
 // Randomly moves around at various speeds or stands still
