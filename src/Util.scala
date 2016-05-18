@@ -18,7 +18,13 @@ object Util {
 
   val worldSize = 1200
 
+  val defaultPeers = 100
+
   var verbose = false
+
+  var randomStart = false
+
+  var fullPeerLists = false
 
   val matchDist = 10
 
