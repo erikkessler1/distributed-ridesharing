@@ -6,7 +6,14 @@
  *
  * Erik Kessler and Kevin Persons
  */
-class World(peers: List[Peer]) {
+object World {
+
+  var peers: List[Peer] = Nil
+  var time = 0
+
+  // Peer to center the world around
+  private var focusedPeer: Peer = null
+
 
   // Height and width of the terminal window
   private val WIDTH = 132
@@ -16,6 +23,8 @@ class World(peers: List[Peer]) {
    * Setup the world and begin accepting commands to control the world.
    */
   def start() = {
+    focusedPeer = peers(0)
+    time = 0
     printInitialWorld()
     handleCommands()
   }
@@ -88,7 +97,7 @@ class World(peers: List[Peer]) {
       val args = ln.split(" ").toList.tail
 
       // Execute the command and print the result
-      val paddedResult = Command.execute(this, command, args).padTo(35, ' ')
+      val paddedResult = Command.execute(command, args).padTo(35, ' ')
       print("\n   " + ANSI.style(ANSI.BOLD::Nil, paddedResult))
       print(ANSI.up(1) + ANSI.left(paddedResult.length))
 
@@ -186,10 +195,10 @@ class World(peers: List[Peer]) {
 
   def printPeerList() : Unit = {
     var h = 12
-    for ((id, pos) <- focusedPeer.getPeerLocs) {
+    for (peer <- focusedPeer.getPeerLocs) {
       h += 1
       if (h >= HEIGHT) return
-      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"P${id}, Location ${pos}    ")
+      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"P${peer.id}, Location ${peer.pos}    ")
     }
   }
 
@@ -233,9 +242,6 @@ class World(peers: List[Peer]) {
 
   /* METHODS FOR MANIPULATING THE WORLD */
 
-  // Peer to center the world around
-  private var focusedPeer: Peer = peers(0);
-
   /**
    * Changes which peer the world is centered on.
    */
@@ -250,6 +256,13 @@ class World(peers: List[Peer]) {
    */
   def step(steps: Int, delay: Int) = {
     for (i <- 1 to steps) {
+      time += 1
+
+      // we're still in startup phase of a realistic simulation: add new peers between steps
+      if ((peers.length != Util.numPeers) && !Util.randomStart) {
+        peers = Simulator.initializeIncrementally()
+      }
+
       peers.foreach { _.step() }
       printWorld()
       if (steps > 1) Thread.sleep(delay)

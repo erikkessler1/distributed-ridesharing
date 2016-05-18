@@ -16,9 +16,16 @@ object Util {
     return matched
   }
 
+  def sendUpdate(sender: Peer, reciever: Peer): (List[FrozenPeer], Int) = {
+
+    (Nil, -1)
+  }
+
   val worldSize = 1200
 
   val defaultPeers = 100
+
+  var numPeers = 0
 
   var verbose = false
 
@@ -30,6 +37,7 @@ object Util {
 
   val rideLength = 10
 
+  val updateDist = 10
 
   // counts for important metrics
   var sentMessages = 0

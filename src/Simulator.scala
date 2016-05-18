@@ -23,31 +23,33 @@ object Simulator {
       }
     }
 
+    Util.numPeers = numberOfPeers
+
     // Randomly initialize a list of some number of peers, as specified by user input
     if (Util.randomStart) {
-      val peers = initializeRandomly(numberOfPeers)
-      val world = new World(peers)
-      world.start()
+      val peers = initializeRandomly()
+      World.peers = peers
+      World.start()
     }
-    // Initialize more slowly and realistically
+    // Initialize incrementally (more realistic)
     else {
-      val world = new World(Nil)
-      world.start()
-      val peers = initializeSlowly(numberOfPeers, world)
+      val firstPeer = createNewPeer(1)
+      World.peers = List(firstPeer)
+      World.start()
     }
   }
 
-  def initializeRandomly(n: Int) : List[Peer] = {
+  def initializeRandomly() : List[Peer] = {
 
     var list : List[Peer] = Nil
 
-    for (i <- 1 to n) {
-      list = createNewPeer(n,i) :: list
+    for (i <- 1 to Util.numPeers) {
+      list = createNewPeer(i) :: list
     }
 
     for (peer <- list) {
       if (!Util.fullPeerLists) {
-        peer.setPeerList(List.fill(10)(list(scala.util.Random.nextInt(n - 1) + 1)))
+        peer.setPeerList(List.fill(10)(list(scala.util.Random.nextInt(Util.numPeers - 1) + 1)))
       }
       else {
         peer.setPeerList(list.filter(_ != peer))
@@ -59,37 +61,22 @@ object Simulator {
 
   // each new peer to join the system begins with a single node peer list,
   // and the nodes join over time rather than all at once
-  def initializeSlowly(n: Int, world: World) : List[Peer] = {
+  def initializeIncrementally() : List[Peer] = {
 
-    var list : List[Peer] = Nil
+    var list = World.peers
 
-    for (i <- 1 to n) {
+    // create n-1 other new peers one at a time
+    var peer = createNewPeer(list.length)
+    list = peer :: list
 
-      if (i == 1) {
-        // create a first random peer.
-        list = createNewPeer(n,i) :: list
-        // add it to the world list
-        world.peers = list
-        world.step()
-      }
-      else {
-        // create n-1 other new peers one at a time
-        var peer = createNewPeer(n,i)
+    // randomly assign each new peer an existing peer to be on its start list
+    peer.setPeerList(List.fill(1)(list(scala.util.Random.nextInt(list.length - 1) + 1)))
 
-        // randomly assign each new peer an existing peer to be on its start list
-        peer.setPeerList(List.fill(1)(list(scala.util.Random.nextInt(i - 1) + 1)))
-
-        list = peer :: list
-
-        world.peers = list
-        world.step()
-      }
+    list
   }
 
-  list
-}
-
-  def createNewPeer(n: Int, i: Int) : Peer = {
+  def createNewPeer(i: Int) : Peer = {
+    val n = Util.numPeers
     val random = scala.util.Random.nextInt(6) //0-5
     val initialPosition = scala.util.Random.nextInt(Util.worldSize + 1) //0-worldSize (using 1000)
     val newPeer = random match {
@@ -99,7 +86,7 @@ object Simulator {
       // 3x as likely to be a passenger so that there are half drivers, half passengers
       case _ => new Passenger(n - i, initialPosition)
     }
-    
+
     newPeer
   }
 }

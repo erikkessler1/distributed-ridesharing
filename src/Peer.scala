@@ -30,6 +30,8 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // position of the peer in the world
   var pos: Int = initialPos
 
+  var lastReportedPos: Int = initialPos
+
   // current ride-matched status of this peer
   protected var matched = false
 
@@ -48,12 +50,12 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // other nodes that this node is currently in communication with
   protected var peerList : List[Peer] = Nil
 
-  protected var peerLocs : List[(Int,Int)] = Nil
+  protected var peerLocs : List[FrozenPeer] = Nil
 
   protected var rideLength = 0
 
   def setPeerList(peers: List[Peer]) = {
-   peerLocs = peers.map(p => (p.id, p.pos)).sortBy({case (_,p) => p})
+   peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time, p)).sortBy(_.pos)
    peerList = peers
   }
 
@@ -67,24 +69,28 @@ abstract class Peer(val id: Int, initialPos: Int) {
       case _ => rideLength -= 1
     }
     pos = wrap(pos)
-    updatePeerList()
+    updatePeerList(pos)
     pos
   }
 
   def logPosition(oldPos : Int) : Unit = {
-    if (Util.verbose) peerLog = s"Moved from $oldPos to $pos    " :: peerLog
+    if (Util.verbose) peerLog = s"Moved from $oldPos to $pos".padTo(45, ' ')::peerLog
   }
 
   def logGivingRide(passenger: Int, rideLength: Int) = {
-    peerLog = s"Driving P$passenger, $rideLength steps.    " :: peerLog
+    peerLog = s"Driving P$passenger, $rideLength steps.".padTo(45, ' ')::peerLog
   }
 
   def logGettingRide(driver: Int, rideLength: Int) = {
-    peerLog = s"Riding with P$driver, $rideLength steps.    " :: peerLog
+    peerLog = s"Riding with P$driver, $rideLength steps.".padTo(45, ' ')::peerLog
   }
 
   def logRideEnd() = {
-    peerLog = s"Ride ended.                                 " :: peerLog
+    peerLog = s"Ride ended.".padTo(45, ' ')::peerLog
+  }
+
+  def logUpdatedPeerList() = {
+    peerLog = "Sent updated location.".padTo(45, ' ')::peerLog
   }
 
   def getPeerList() = peerList
@@ -94,12 +100,54 @@ abstract class Peer(val id: Int, initialPos: Int) {
   // helper function to ensure that the peer wraps around when it reaches the end of the world
   private def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
 
-  private def updatePeerList() = {
+  private def updatePeerList(newPos: Int): Unit = {
+    if (math.abs(lastReportedPos - newPos) < Util.updateDist) return
 
+    logUpdatedPeerList()
+
+    var newPeerList: List[FrozenPeer] = Nil
+
+    for(peer <- peerLocs) {
+      val (newPeers, newPos) = Util.sendUpdate(this, peer.peer)
+
+      // Update what we know about this peer
+      peer.pos = newPos
+      peer.ts = World.time
+
+      // Store the new peer information
+      newPeerList = newPeers ::: newPeerList
+    }
+
+    filterNewPeers(newPeerList)
+
+    lastReportedPos = pos
   }
 
- }
+  private def filterNewPeers(newPeers: List[FrozenPeer]) = {
+    for (newPeer <- newPeers) {
+      peerLocs.find(_.id == newPeer.id) match {
+	case Some(p) => if (newPeer.ts > p.ts) { p.ts = newPeer.ts; p.pos = newPeer.pos }
+	case None    => peerLocs = newPeer::peerLocs
+      }
+    }
 
+    peerLocs = peerLocs.sortBy(_.pos)
+    peerLocs = peerLocs.take(10)
+  }
+
+}
+
+/**
+ * Holds information about a peer in a frozen state.
+ * This models what a node would hold about each peer it knows about.
+ * 
+ * id - id of the peer
+ * pos - know pos of the peer
+ * ts - timestamp of the known pos of the peer
+ * peer - the actual peer object - so this would be like the ip address that
+ *        would allow us to actually communicate with the peer.
+ */ 
+class FrozenPeer(val id: Int, var pos: Int, var ts: Int, val peer: Peer)
 
 /* --TYPES OF PEERS-- */
 
@@ -167,8 +215,8 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     if (newRequest) Util.rideRequests += 1
     
     // Try to match with every peer in the peer list
-    for((id,_) <- peerLocs) {
-      if (Util.sendRequest(this, peerList.find(_.id == id).get)) {
+    for(peer <- peerLocs) {
+      if (Util.sendRequest(this, peer.peer)) {
         matched = true
         rideLength = Util.rideLength
         logGettingRide(id, rideLength)
