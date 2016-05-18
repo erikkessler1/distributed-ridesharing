@@ -17,8 +17,8 @@ object Util {
   }
 
   def sendUpdate(sender: Peer, reciever: Peer): (List[FrozenPeer], Int) = {
-    
-    (Nil, -1)
+    reciever.getUpdate(sender)
+    (reciever.getPeerLocs.to, reciever.pos)
   }
 
   val worldSize = 1200

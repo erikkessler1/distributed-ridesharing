@@ -55,7 +55,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   protected var rideLength = 0
 
   def setPeerList(peers: List[Peer]) = {
-   peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time, p)).sortBy(_.pos)
+   peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time, p))
    peerList = peers
   }
 
@@ -91,6 +91,10 @@ abstract class Peer(val id: Int, initialPos: Int) {
 
   def logUpdatedPeerList() = {
     peerLog = "Sent updated location.".padTo(45, ' ')::peerLog
+  }
+
+  def logRecievedUpdate(sender: Peer) = {
+    peerLog = s"Got update from ${sender.id}".padTo(45, ' ')::peerLog
   }
 
   def getPeerList() = peerList
@@ -131,8 +135,16 @@ abstract class Peer(val id: Int, initialPos: Int) {
       }
     }
 
-    peerLocs = peerLocs.sortBy(_.pos)
+    peerLocs = peerLocs.sortBy(p => math.abs(p.pos - pos))
     peerLocs = peerLocs.take(10)
+  }
+
+  def getUpdate(sender: Peer) = {
+    logRecievedUpdate(sender)
+    peerLocs.find(_.id == sender.id) match {
+      case Some(p) => p.pos = sender.pos; p.ts = World.time
+      case _       => 
+    }
   }
 
 }
@@ -215,7 +227,7 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     if (newRequest) Util.rideRequests += 1
     
     // Try to match with every peer in the peer list
-    for(peer <- peerLocs) {
+    for(peer <- peerLocs.sortBy(p => math.abs(p.pos - pos))) {
       if (Util.sendRequest(this, peer.peer)) {
         matched = true
         rideLength = Util.rideLength
