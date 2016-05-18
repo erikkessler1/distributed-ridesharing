@@ -143,10 +143,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
 
   def getUpdate(sender: Peer) = {
     logRecievedUpdate(sender)
-    peerLocs.find(_.id == sender.id) match {
-      case Some(p) => p.pos = sender.pos; p.ts = World.time
-      case _       => 
-    }
+    filterNewPeers(List(new FrozenPeer(sender.id, sender.pos, World.time, sender)))
   }
 
 }
