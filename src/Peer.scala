@@ -55,7 +55,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   protected var rideLength = 0
 
   def setPeerList(peers: List[Peer]) = {
-   peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time)).sortBy(_.pos)
+   peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time, p)).sortBy(_.pos)
    peerList = peers
   }
 
@@ -100,7 +100,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
     if (math.abs(lastReportedPos - newPos) < Util.updateDist) return
 
     for(peer <- peerLocs) {
-      val (newPeers, newPos) = Util.sendUpdate(this, peerList.find(peer.id == id).get)
+      val (newPeers, newPos) = Util.sendUpdate(this, peer.peer)
 
       
     }
@@ -110,7 +110,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
 
 }
 
-class FrozenPeer(val id: Int, val pos: Int, val ts: Int)
+class FrozenPeer(var id: Int, var pos: Int, var ts: Int, val peer: Peer)
 
 /* --TYPES OF PEERS-- */
 
@@ -179,7 +179,7 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     
     // Try to match with every peer in the peer list
     for(peer <- peerLocs) {
-      if (Util.sendRequest(this, peerList.find(peer.id == id).get)) {
+      if (Util.sendRequest(this, peer.peer)) {
         matched = true
         rideLength = Util.rideLength
         logGettingRide(id, rideLength)

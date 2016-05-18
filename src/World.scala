@@ -11,6 +11,10 @@ object World {
   var peers: List[Peer] = Nil
   var time = 0
 
+  // Peer to center the world around
+  private var focusedPeer: Peer = null
+
+
   // Height and width of the terminal window
   private val WIDTH = 132
   private val HEIGHT = 43
@@ -19,6 +23,7 @@ object World {
    * Setup the world and begin accepting commands to control the world.
    */
   def start() = {
+    focusedPeer = peers(0)
     time = 0
     printInitialWorld()
     handleCommands()
@@ -92,7 +97,7 @@ object World {
       val args = ln.split(" ").toList.tail
 
       // Execute the command and print the result
-      val paddedResult = Command.execute(this, command, args).padTo(35, ' ')
+      val paddedResult = Command.execute(command, args).padTo(35, ' ')
       print("\n   " + ANSI.style(ANSI.BOLD::Nil, paddedResult))
       print(ANSI.up(1) + ANSI.left(paddedResult.length))
 
@@ -190,10 +195,10 @@ object World {
 
   def printPeerList() : Unit = {
     var h = 12
-    for ((id, pos) <- focusedPeer.getPeerLocs) {
+    for (peer <- focusedPeer.getPeerLocs) {
       h += 1
       if (h >= HEIGHT) return
-      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"P${id}, Location ${pos}    ")
+      print(ANSI.move(h, 3*WIDTH/4 + 1) + s"P${peer.id}, Location ${peer.pos}    ")
     }
   }
 
@@ -236,9 +241,6 @@ object World {
 
 
   /* METHODS FOR MANIPULATING THE WORLD */
-
-  // Peer to center the world around
-  private var focusedPeer: Peer = peers(0);
 
   /**
    * Changes which peer the world is centered on.

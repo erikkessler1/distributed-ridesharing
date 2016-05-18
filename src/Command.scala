@@ -13,10 +13,10 @@ object Command {
   /**
    * Execute command, op, with args on the world
    */
-  def execute(world: World, op: String, args: List[String]) =
+  def execute(op: String, args: List[String]) =
     // Find and execute the command that matches
     commands.find(_.c == op) match {
-      case Some(command) => command.execute(world, args)
+      case Some(command) => command.execute(args)
       case None          => "Command not understood"
     }
 
@@ -31,7 +31,7 @@ object Command {
  */
 abstract class WorldCommand(val c: String, val args: String, val description: String) {
 
-  def execute(world: World, args: List[String]): String
+  def execute(args: List[String]): String
 
   override def toString() = s"${(c + " " + args).padTo(6, ' ')}: $description"
 
@@ -42,7 +42,7 @@ abstract class WorldCommand(val c: String, val args: String, val description: St
  */
 class StepCommand() extends WorldCommand("s", "[n] [d]", "Step simulation n steps with d delay.") {
 
-  override def execute(world: World, args: List[String]) = {
+  override def execute(args: List[String]) = {
     val n = args match {
       case n::as => Util.toInt(n).getOrElse(1)
       case Nil   => 1
@@ -53,7 +53,7 @@ class StepCommand() extends WorldCommand("s", "[n] [d]", "Step simulation n step
       case _        => 200
     }
 
-    world.step(n, delay)
+    World.step(n, delay)
     "Step"
   }
 }
@@ -63,7 +63,7 @@ class StepCommand() extends WorldCommand("s", "[n] [d]", "Step simulation n step
  */
 class FocusCommand() extends WorldCommand("f", "[n]", "Set focus on peer n.") {
 
-  override def execute(world: World, args: List[String]) = {
+  override def execute(args: List[String]) = {
     // Try to get the n
     val n = args match {
       case a::as => Util.toInt(a)
@@ -71,7 +71,7 @@ class FocusCommand() extends WorldCommand("f", "[n]", "Set focus on peer n.") {
     }
 
     n match {
-      case Some(n) => world.setFocus(n); s"Focus set to peer $n"
+      case Some(n) => World.setFocus(n); s"Focus set to peer $n"
       case None    => "Peer not found"
     }
   }
@@ -79,14 +79,14 @@ class FocusCommand() extends WorldCommand("f", "[n]", "Set focus on peer n.") {
 
 class MessagesCommand() extends WorldCommand("m", "", "Print total messages sent.") {
 
-  override def execute(world: World, args: List[String]) = {
+  override def execute(args: List[String]) = {
     Util.sentMessages + " total messages sent."
   }
 }
 
 class RidesCommand() extends WorldCommand("r", "", "Print ratio of ride matching.") {
 
-  override def execute(world: World, args: List[String]) = {
+  override def execute(args: List[String]) = {
     s"${Util.matches}/${Util.rideRequests} of rides requests serviced"
   }
 }
