@@ -195,7 +195,7 @@ object World {
 
   def printPeerList() : Unit = {
     var h = 12
-    for (peer <- focusedPeer.getPeerLocs) {
+    for (peer <- focusedPeer.getFrozenPeerList) {
       h += 1
       if (h >= HEIGHT) return
       print(ANSI.move(h, 3*WIDTH/4 + 1) + s"P${peer.id}, Location ${peer.pos}    ")

@@ -28,13 +28,13 @@ object Network {
    */
   def sendUpdate(sender: Peer, reciever: Peer): (List[FrozenPeer], Int) = {
     // Communication is two-way
-    sentMesages += 2
+    sentMessages += 2
 
     // Send the update to the reciever
     reciever.getUpdate(sender)
 
     // Send the reciever's peer list back to the initial sender
-    (reciever.getPeerLocs.map(p => new FrozenPeer(p.id, p.pos, p.ts, p.peer)).filterNot(_.id == sender.id), reciever.pos)
+    (reciever.getFrozenPeerList.map(p => new FrozenPeer(p.id, p.pos, p.ts, p.peer)).filterNot(_.id == sender.id), reciever.pos)
   }
 
 }

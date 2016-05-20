@@ -41,4 +41,10 @@ object Util {
       case e: Exception => None
     }
   }
+
+  /**
+   * Helper function to ensure that the peer wraps around when it reaches the end of the world.
+   */
+  def wrap(x: Int): Int = { if (x < 0) Util.worldSize + x else x % Util.worldSize }
+
 }
