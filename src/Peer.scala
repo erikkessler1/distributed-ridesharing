@@ -113,7 +113,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
     var newPeerList: List[FrozenPeer] = Nil
 
     for(peer <- peerLocs) {
-      val (newPeers, newPos) = Util.sendUpdate(this, peer.peer)
+      val (newPeers, newPos) = Network.sendUpdate(this, peer.peer)
 
       // Update what we know about this peer
       peer.pos = newPos
@@ -223,11 +223,11 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
   private def sendRideRequest(newRequest :Boolean) : Unit = {
     
     // Increment request count if it is a new request
-    if (newRequest) Util.rideRequests += 1
+    if (newRequest) Network.rideRequests += 1
     
     // Try to match with every peer in the peer list
     for(peer <- peerLocs.sortBy(p => math.abs(p.pos - pos))) {
-      if (Util.sendRequest(this, peer.peer)) {
+      if (Network.sendRequest(this, peer.peer)) {
         matched = true
         rideLength = Util.rideLength
         logGettingRide(id, rideLength)

@@ -88,7 +88,7 @@ class FocusCommand() extends WorldCommand("f", "[n]", "Set focus on peer n.") {
 class MessagesCommand() extends WorldCommand("m", "", "Print total messages sent.") {
 
   override def execute(args: List[String]) = {
-    Util.sentMessages + " total messages sent."
+    Network.sentMessages + " total messages sent."
   }
 }
 
@@ -99,6 +99,6 @@ class MessagesCommand() extends WorldCommand("m", "", "Print total messages sent
 class RidesCommand() extends WorldCommand("r", "", "Print ratio of ride matching.") {
 
   override def execute(args: List[String]) = {
-    s"${Util.matches}/${Util.rideRequests} of rides requests serviced"
+    s"${Network.rideMatches}/${Network.rideRequests} of rides requests serviced"
   }
 }
