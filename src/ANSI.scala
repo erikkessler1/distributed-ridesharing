@@ -1,3 +1,9 @@
+/**
+ * Helper functions and constants for drawing to the terminal using
+ * useing ANSI escape codes.
+ *
+ * Erik Kessler and Kevin Persons
+ */
 object ANSI {
 
   // Style options
