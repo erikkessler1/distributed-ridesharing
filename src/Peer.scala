@@ -40,6 +40,10 @@ abstract class Peer(val id: Int, initialPos: Int) {
    peerLocs = peers.map(p => new FrozenPeer(p.id, p.pos, World.time, p))
   }
 
+  def getPeerList() = peerLocs.map(_.peer)
+
+  def getFrozenPeerList() = peerLocs
+
   /**
    * Moves the peer through the world at each time step.
    * Calls abstract method stepAction to determine the next position.
@@ -67,6 +71,9 @@ abstract class Peer(val id: Int, initialPos: Int) {
    */
   def stepAction(currentPos: Int): (Int, Int)
 
+  /**
+   * 
+   */
   private def updatePeerList(): Unit = {
     if (math.abs(lastReportedPos - pos) < Util.updateDist && World.time - lastReportTime < 20) return
 
@@ -102,10 +109,6 @@ abstract class Peer(val id: Int, initialPos: Int) {
     peerLocs = peerLocs.sortBy(p => math.abs(p.pos - pos))
     peerLocs = peerLocs.take(10)
   }
-
-  def getPeerList() = peerLocs.map(_.peer)
-
-  def getFrozenPeerList() = peerLocs
 
   def respondToRequest(peer: Peer) : Boolean = {
     if (!matched && math.abs(peer.pos - pos) < Util.matchDist) {
