@@ -72,16 +72,21 @@ abstract class Peer(val id: Int, initialPos: Int) {
   def stepAction(currentPos: Int): (Int, Int)
 
   /**
-   * 
+   * Updates the peer list which involves
+   * alerting know peers about your new position.
+   * This is the "core" of our protocol.
    */
   private def updatePeerList(): Unit = {
-    if (math.abs(lastReportedPos - pos) < Util.updateDist && World.time - lastReportTime < 20) return
+
+    // Only send updates after a certain number of steps or certain distance moved
+    if (math.abs(lastReportedPos - pos) < Util.updateDist && 
+	World.time - lastReportTime < 20) return
 
     logUpdatedPeerList()
 
     var newPeerList: List[FrozenPeer] = Nil
 
-    for(peer <- peerLocs) {
+    for(peer <- peerLocs.sortBy(p => math.abs(p.pos - pos))) {
       val (newPeers, newPos) = Network.sendUpdate(this, peer.peer)
 
       // Update what we know about this peer
@@ -98,30 +103,44 @@ abstract class Peer(val id: Int, initialPos: Int) {
     lastReportTime = World.time
   }
 
+  /**
+   * Combine the newPeers into the existing list.
+   * We keep the 10 closest known peers.
+   */ 
   private def filterNewPeers(newPeers: List[FrozenPeer]) = {
     for (newPeer <- newPeers) {
       peerLocs.find(_.id == newPeer.id) match {
+        // Peer already in list - update only if data newer
 	case Some(p) => if (newPeer.ts > p.ts) { p.ts = newPeer.ts; p.pos = newPeer.pos }
+ 
+        // Add peer to the list
 	case None    => peerLocs = newPeer::peerLocs
       }
     }
 
-    peerLocs = peerLocs.sortBy(p => math.abs(p.pos - pos))
-    peerLocs = peerLocs.take(10)
+    // Removing this reduces/removes partitioning
+    //Take the 10 closest
+    peerLocs = peerLocs.sortBy(p => math.abs(p.pos - pos)).take(Util.peerListSize)
   }
 
+  /**
+   * Responds to a ride request with true or false.
+   * If wish to never offer a ride, can override to return false.
+   */ 
   def respondToRequest(peer: Peer) : Boolean = {
     if (!matched && math.abs(peer.pos - pos) < Util.matchDist) {
       matched = true
       rideLength = Util.rideLength
       logGivingRide(peer.id, rideLength)
       true
-    }
-    else {
+    } else {
       false
     }
   }
 
+  /**
+   * Handles when a peer sends a location update to you.
+   */ 
   def getUpdate(sender: Peer) = {
     logRecievedUpdate(sender)
     filterNewPeers(List(new FrozenPeer(sender.id, sender.pos, World.time, sender)))
@@ -146,6 +165,7 @@ abstract class Peer(val id: Int, initialPos: Int) {
   }
 
   def logUpdatedPeerList() = {
+    peerLog = peerLog.take(50)
     peerLog = "Sent updated location.".padTo(45, ' ')::peerLog
   }
 
@@ -234,7 +254,7 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
    * If newRequest is true, we increment our request counter.
    * It is false when a request spans multiple steps.
    */ 
-  private def sendRideRequest(newRequest :Boolean) : Unit = {
+  private def sendRideRequest(newRequest: Boolean) : Unit = {
     
     // Increment request count if it is a new request
     if (newRequest) Network.rideRequests += 1
@@ -243,6 +263,7 @@ class Passenger(id: Int, initialPos: Int) extends Peer(id, initialPos) {
     for(peer <- peerLocs.sortBy(p => math.abs(p.pos - pos))) {
       if (Network.sendRequest(this, peer.peer)) {
         matched = true
+	requestStatus = 0
         rideLength = Util.rideLength
         logGettingRide(id, rideLength)
         return

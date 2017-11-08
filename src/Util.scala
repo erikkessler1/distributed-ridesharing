@@ -17,6 +17,9 @@ object Util {
 
   var fullPeerLists = false
 
+  // Number of peers to maintain in the peer list
+  var peerListSize = 10
+
   // Peers must be within disstance to match
   val matchDist = 10
 

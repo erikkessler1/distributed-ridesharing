@@ -56,7 +56,7 @@ object Simulator {
     // Initialize the peer list, or set of peers a node knows about, for each node
     for (peer <- list) {
       if (Util.fullPeerLists) {
-      
+
          // Set the peer list to be all except the peer itself
       	 peer.setPeerList(list.filterNot(_ == peer))
       } else {
@@ -93,7 +93,7 @@ object Simulator {
     val peerOfEntry = List.fill(1)(list(if (list.length == 1) 0 else Random.nextInt(list.length - 1)))
     peer.setPeerList(peerOfEntry)
 
-    peer::list // Return the list with the new peer
+    list:::(peer::Nil) // Return the list with the new peer
   }
 
   /**
@@ -108,9 +108,42 @@ object Simulator {
       case 0 => new Commuter(id, initialPosition)
       case 1 => new RandomMover(id, initialPosition)
       case 2 => new Traveler(id, initialPosition)
-      
+
       // 3x as likely to be a passenger so that there are half drivers, half passengers
       case _ => new Passenger(id, initialPosition)
     }
   }
+
+  def findNetworkPartitions() : Int = {
+    var partitions : Int = 0
+    // maintain a list of peers with boolean "visited" flags all initially false
+    var traversableList = World.peers.map(p => new TraversablePeer(p,false))
+    for (peer <- traversableList) {
+      // peer has not been visited yet
+      if (peer.visited != true) {
+        peer.visited = true // visit it
+        partitions += 1
+        traversePeerList(peer, traversableList)
+      }
+    }
+    partitions
+  }
+
+  def traversePeerList(peer : TraversablePeer, traversableList : List[TraversablePeer]) : Unit = {
+    for (n <- peer.peer.getPeerList()) {
+      var neighbor = (traversableList find {t : TraversablePeer => t.peer.id == n.id}).get
+      if (neighbor.visited != true) {
+        neighbor.visited = true
+        traversePeerList(neighbor, traversableList)
+      }
+      for (p <- traversableList) {
+        if (!p.visited && p.peer.getPeerList().exists(_.id == peer.peer.id)) {
+          p.visited = true
+          traversePeerList(p, traversableList)
+        }
+      }
+    }
+  }
 }
+
+class TraversablePeer(val peer: Peer, var visited: Boolean)

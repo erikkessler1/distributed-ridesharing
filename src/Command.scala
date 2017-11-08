@@ -9,7 +9,7 @@ object Command {
   /**
    * All commands available
    */
-  val commands: List[WorldCommand] = List(new StepCommand(), new FocusCommand(), new MessagesCommand(), new RidesCommand())
+  val commands: List[WorldCommand] = List(new StepCommand(), new FocusCommand(), new MessagesCommand(), new RidesCommand(), new PartitionCommand())
 
   /**
    * Execute command, op, with args on the world
@@ -56,7 +56,7 @@ class StepCommand() extends WorldCommand("s", "[n] [d]", "Step simulation n step
 
     // Execute the step
     World.step(n, delay)
-    
+
     "Step"
   }
 }
@@ -101,4 +101,13 @@ class RidesCommand() extends WorldCommand("r", "", "Print ratio of ride matching
   override def execute(args: List[String]) = {
     s"${Network.rideMatches}/${Network.rideRequests} of rides requests serviced"
   }
+}
+
+
+class PartitionCommand() extends WorldCommand("p", "", "Print whether network has become partitioned.") {
+
+    override def execute(args: List[String]) = {
+      val partitions = Simulator.findNetworkPartitions()
+      s"The network is partitioned into ${partitions} section(s)."
+    }
 }

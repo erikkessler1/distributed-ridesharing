@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.7.31)  28 APR 2016 20:54
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.7.31)  21 MAY 2016 15:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -146,50 +146,122 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 22.
 
-Underfull \hbox (badness 10000) in paragraph at lines 33--34
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+
+]
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 48.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+) [2]
+<images/ui.png, id=13, 1194.4625pt x 417.56pt>
+File: images/ui.png Graphic file (type png)
+ <use images/ui.png>
+Package pdftex.def Info: images/ui.png used on input line 56.
+(pdftex.def)             Requested size: 422.77661pt x 147.792pt.
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+
+<images/protocol_diagram.png, id=14, 1068.99374pt x 353.32pt>
+File: images/protocol_diagram.png Graphic file (type png)
+
+<use images/protocol_diagram.png>
+Package pdftex.def Info: images/protocol_diagram.png used on input line 68.
+(pdftex.def)             Requested size: 422.77661pt x 139.73508pt.
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+
+<images/protocol_impact.png, id=16, 960.58875pt x 357.335pt>
+File: images/protocol_impact.png Graphic file (type png)
+
+<use images/protocol_impact.png>
+Package pdftex.def Info: images/protocol_impact.png used on input line 84.
+(pdftex.def)             Requested size: 422.77661pt x 157.2715pt.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 101.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[3]
+Underfull \vbox (badness 2302) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4 <./images/ui.png> <./images/protocol_diagram.png>]
+<images/messages_sent_v_peers.png, id=24, 1351.0475pt x 795.97375pt>
+File: images/messages_sent_v_peers.png Graphic file (type png)
+
+<use images/messages_sent_v_peers.png>
+Package pdftex.def Info: images/messages_sent_v_peers.png used on input line 12
+4.
+(pdftex.def)             Requested size: 422.77661pt x 249.08127pt.
+
+<images/world_density.png, id=25, 1351.0475pt x 795.97375pt>
+File: images/world_density.png Graphic file (type png)
+
+<use images/world_density.png>
+Package pdftex.def Info: images/world_density.png used on input line 133.
+(pdftex.def)             Requested size: 422.77661pt x 249.08127pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 138--139
 
  []
 
+<images/messages_v_pl_size.png, id=26, 1351.0475pt x 795.97375pt>
+File: images/messages_v_pl_size.png Graphic file (type png)
 
-Underfull \hbox (badness 10000) in paragraph at lines 38--40
-\OT1/ptm/m/n/10.95 We have found other peo-ple work-ing on
+<use images/messages_v_pl_size.png>
+Package pdftex.def Info: images/messages_v_pl_size.png used on input line 142.
+(pdftex.def)             Requested size: 422.77661pt x 249.08127pt.
+
+<images/ratio_v_pls.png, id=27, 1351.0475pt x 795.97375pt>
+File: images/ratio_v_pls.png Graphic file (type png)
+
+<use images/ratio_v_pls.png>
+Package pdftex.def Info: images/ratio_v_pls.png used on input line 149.
+(pdftex.def)             Requested size: 422.77661pt x 249.08127pt.
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+ [5 <./images/protocol_impact.png>] [6 <./images/messages_sent_v_peers.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [7 <./images/world_density.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [8 <./images/messages_v_pl_size.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 191--192
+
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--40
-\OT1/ptm/m/n/10.95 sim-i-lar things. For ex-am-ple: La'Zooz:
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--40
-\OT1/ptm/m/n/10.95 http://www.shareable.net/blog/lazooz-the-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 44--45
-
- []
-
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
-
-
-] (./paper.aux) ) 
+[9 <./images/ratio_v_pls.png>] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 1538 strings out of 495028
- 21959 string characters out of 6181497
- 77371 words of memory out of 5000000
- 4745 multiletter control sequences out of 15000+600000
- 15289 words of font info for 35 fonts, out of 8000000 for 9000
+ 1623 strings out of 495028
+ 23604 string characters out of 6181497
+ 82435 words of memory out of 5000000
+ 4816 multiletter control sequences out of 15000+600000
+ 16420 words of font info for 39 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 37i,8n,23p,522b,247s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</u
-sr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/urw/times/utmri8a.pfb>
-Output written on paper.pdf (1 page, 36282 bytes).
+ 37i,8n,23p,1395b,247s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fo
+nts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/urw/courie
+r/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on paper.pdf (9 pages, 304367 bytes).
 PDF statistics:
- 21 PDF objects out of 1000 (max. 8388607)
- 14 compressed objects within 1 object stream
+ 65 PDF objects out of 1000 (max. 8388607)
+ 36 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

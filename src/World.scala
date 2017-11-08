@@ -8,7 +8,10 @@
  */
 object World {
 
+  // Peer objects in the world
   var peers: List[Peer] = Nil
+
+  // Universal clock - increments with each step
   var time = 0
 
   // Peer to center the world around
@@ -184,6 +187,7 @@ object World {
   }
 
 
+  // Prints the log for the focused peer
   def printLog() : Unit = {
     var h = 12
     for (msg <- focusedPeer.peerLog) {
@@ -193,6 +197,7 @@ object World {
     }
   }
 
+  // Prints the peer list of the focused peer
   def printPeerList() : Unit = {
     var h = 12
     for (peer <- focusedPeer.getFrozenPeerList) {
@@ -232,14 +237,6 @@ object World {
     line // Return the string
   }
 
-  private def getNextPeer(peers: List[Peer]) = {
-    peers.headOption match {
-      case Some(p) => p.pos
-      case None    => -1
-    }
-  }
-
-
   /* METHODS FOR MANIPULATING THE WORLD */
 
   /**
@@ -247,7 +244,6 @@ object World {
    */
   def setFocus(n: Int) = {
     focusedPeer = peers(n)
-    //focusedPeer.peerList = peers.filter(_.pos % 2 == 0)
     printWorld()
   }
 
